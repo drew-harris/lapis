@@ -2,21 +2,27 @@
 #
 # https://gqlgen.com/getting-started/
 
+scalar Time
+
 type Log {
   id: ID!
   message: String!
   player: Player!
   playerId: String!
+  createdAt: Time!
 }
 
 type Player {
   id: ID!
   name: String!
   logs: [Log!]!
+  createdAt: Time!
 }
 
 type Query {
   logs: [Log!]!
+  players: [Player!]!
+  player(id: ID!): Player!
 }
 
 input NewPlayer {

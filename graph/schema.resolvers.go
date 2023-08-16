@@ -46,6 +46,7 @@ func (r *mutationResolver) Log(ctx context.Context, input model.LogInput) (*mode
 	player := model.Player{}
 	r.db.Where("id = ?", input.PlayerID).First(&player)
 	if r.db.Error != nil {
+		fmt.Println(r.db.Error)
 		return nil, r.db.Error
 	}
 	if player.ID == "" {
@@ -68,6 +69,7 @@ func (r *mutationResolver) Log(ctx context.Context, input model.LogInput) (*mode
 func (r *playerResolver) Logs(ctx context.Context, obj *model.Player) ([]model.Log, error) {
 	// Get the logs for a player
 	logs := []model.Log{}
+	fmt.Println("Extra resolver: getting logs for player")
 	r.db.Where("player_id = ?", obj.ID).Find(&logs)
 	if r.db.Error != nil {
 		return nil, r.db.Error
@@ -78,11 +80,31 @@ func (r *playerResolver) Logs(ctx context.Context, obj *model.Player) ([]model.L
 // Logs is the resolver for the logs field.
 func (r *queryResolver) Logs(ctx context.Context) ([]model.Log, error) {
 	logs := []model.Log{}
-	result := r.db.Preload("Player").Find(&logs) // TODO: Optimize this
+	result := r.db.Joins("Player").Find(&logs) // TODO: Optimize this
 	if result.Error != nil {
 		return nil, result.Error
 	}
 	return logs, nil
+}
+
+// Players is the resolver for the players field.
+func (r *queryResolver) Players(ctx context.Context) ([]model.Player, error) {
+	players := []model.Player{}
+	result := r.db.Find(&players)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return players, nil
+}
+
+// Player is the resolver for the player field.
+func (r *queryResolver) Player(ctx context.Context, id string) (*model.Player, error) {
+	player := model.Player{}
+	result := r.db.Where("id = ?", id).First(&player)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &player, nil
 }
 
 // Log returns LogResolver implementation.

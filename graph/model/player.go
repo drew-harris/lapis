@@ -1,10 +1,10 @@
 package model
 
-import "gorm.io/gorm"
+import "time"
 
 type Player struct {
-	gorm.Model
-	ID   string `json:"id" gorm:"primaryKey" gorm:"size:255"`
-	Name string `json:"name"`
-	Logs []*Log `json:"logs"`
+	ID        string    `json:"id" gorm:"primaryKey;not null;size:255"`
+	Name      string    `json:"name" gorm:"not null"`
+	CreatedAt time.Time `json:"createdAt" gorm:"not null"`
+	Logs      []Log     `json:"logs" gorm:"foreignKey:PlayerID;references:ID`
 }

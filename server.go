@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -34,8 +33,6 @@ func main() {
 
 	db.AutoMigrate(&model.Player{})
 	db.AutoMigrate(&model.Log{})
-
-	fmt.Println("We made it")
 
 	resolver := graph.NewResolver(db)
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &resolver}))
