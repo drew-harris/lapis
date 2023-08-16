@@ -78,7 +78,7 @@ func (r *playerResolver) Logs(ctx context.Context, obj *model.Player) ([]model.L
 // Logs is the resolver for the logs field.
 func (r *queryResolver) Logs(ctx context.Context) ([]model.Log, error) {
 	logs := []model.Log{}
-	result := r.db.Preload("Player").Find(&logs)
+	result := r.db.Preload("Player").Find(&logs) // TODO: Optimize this
 	if result.Error != nil {
 		return nil, result.Error
 	}
