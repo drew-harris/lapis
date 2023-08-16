@@ -17,7 +17,7 @@ func (r *mutationResolver) RegisterPlayer(ctx context.Context, input model.NewPl
 	player := model.Player{}
 	r.db.Where("name = ?", input.Name).First(&player)
 	if player.ID != "" {
-		return nil, nil
+		return &player, nil
 	}
 
 	player = model.Player{
