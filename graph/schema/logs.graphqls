@@ -1,0 +1,12 @@
+extend type Query {
+  logs(playerId: String): [Log!]!
+}
+
+input LogInput {
+  message: String!
+  playerId: ID!
+}
+
+extend type Mutation {
+  log(input: LogInput!): Log!
+}
