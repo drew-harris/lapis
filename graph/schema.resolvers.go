@@ -15,9 +15,9 @@ import (
 
 // Player is the resolver for the player field.
 func (r *logResolver) Player(ctx context.Context, obj *model.Log) (*model.Player, error) {
-	// if obj.Player.ID != "" {
-	// 	return obj.Player, nil // TODO: Fix weird memory error
-	// }
+	if obj.Player != nil {
+		return obj.Player, nil // TODO: Fix weird memory error
+	}
 	fmt.Println("Using long query")
 	player := model.Player{}
 	r.db.Where("id = ?", obj.PlayerID).First(&player)
@@ -68,7 +68,7 @@ func (r *mutationResolver) Log(ctx context.Context, input model.LogInput) (*mode
 func (r *playerResolver) Logs(ctx context.Context, obj *model.Player) ([]model.Log, error) {
 	// Get the logs for a player
 	logs := []model.Log{}
-	r.db.Preload("Player").Where("player_id = ?", obj.ID).Find(&logs)
+	r.db.Where("player_id = ?", obj.ID).Find(&logs)
 	if r.db.Error != nil {
 		return nil, r.db.Error
 	}
@@ -78,7 +78,7 @@ func (r *playerResolver) Logs(ctx context.Context, obj *model.Player) ([]model.L
 // Logs is the resolver for the logs field.
 func (r *queryResolver) Logs(ctx context.Context) ([]model.Log, error) {
 	logs := []model.Log{}
-	result := r.db.Find(&logs)
+	result := r.db.Preload("Player").Find(&logs)
 	if result.Error != nil {
 		return nil, result.Error
 	}
