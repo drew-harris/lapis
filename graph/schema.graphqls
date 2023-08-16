@@ -20,7 +20,7 @@ type Player {
 }
 
 type Query {
-  logs: [Log!]!
+  logs(playerId: String): [Log!]!
   players: [Player!]!
   player(id: ID!): Player!
 }

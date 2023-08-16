@@ -1,3 +1,4 @@
 .env
 .graphqlrc.yml
 graph/generated.go
+./graph/generated.go
