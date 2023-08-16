@@ -73,7 +73,7 @@ func (r *playerResolver) Logs(ctx context.Context, obj *model.Player) ([]model.L
 	// Get the logs for a player
 	logs := []model.Log{}
 	fmt.Println("Extra resolver: getting logs for player")
-	r.db.Where("player_id = ?", obj.ID).Find(&logs)
+	r.db.Order("created_at desc").Where("player_id = ?", obj.ID).Find(&logs)
 	if r.db.Error != nil {
 		return nil, r.db.Error
 	}
@@ -87,7 +87,7 @@ func (r *queryResolver) Logs(ctx context.Context, playerID *string) ([]model.Log
 	if playerID != nil {
 		db = db.Where("player_id = ?", *playerID)
 	}
-	result := db.Joins("Player").Find(&logs) // TODO: Optimize this
+	result := db.Order("created_at desc").Joins("Player").Find(&logs) // TODO: Optimize this
 	if result.Error != nil {
 		return nil, result.Error
 	}
