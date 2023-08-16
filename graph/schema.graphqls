@@ -1,0 +1,34 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+type Log {
+  id: ID!
+  message: String!
+  player: Player!
+  playerId: String!
+}
+
+type Player {
+  id: ID!
+  name: String!
+  logs: [Log!]!
+}
+
+type Query {
+  logs: [Log!]!
+}
+
+input NewPlayer {
+  name: String!
+}
+
+input LogInput {
+  message: String!
+  playerId: ID!
+}
+
+type Mutation {
+  createPlayer(input: NewPlayer!): Player!
+  log(input: LogInput!): Log!
+}
