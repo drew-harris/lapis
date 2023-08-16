@@ -16,7 +16,7 @@ import (
 // Player is the resolver for the player field.
 func (r *logResolver) Player(ctx context.Context, obj *model.Log) (*model.Player, error) {
 	if obj.Player != nil {
-		return obj.Player, nil // TODO: Fix weird memory error
+		return obj.Player, nil
 	}
 	fmt.Println("Using long query")
 	player := model.Player{}
@@ -67,6 +67,9 @@ func (r *mutationResolver) Log(ctx context.Context, input model.LogInput) (*mode
 
 // Logs is the resolver for the logs field.
 func (r *playerResolver) Logs(ctx context.Context, obj *model.Player) ([]model.Log, error) {
+	if obj.Logs != nil {
+		return obj.Logs, nil
+	}
 	// Get the logs for a player
 	logs := []model.Log{}
 	fmt.Println("Extra resolver: getting logs for player")
