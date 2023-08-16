@@ -11,12 +11,20 @@ import (
 	"github.com/google/uuid"
 )
 
-// CreatePlayer is the resolver for the createPlayer field.
-func (r *mutationResolver) CreatePlayer(ctx context.Context, input model.NewPlayer) (*model.Player, error) {
-	player := model.Player{
+// RegisterPlayer is the resolver for the registerPlayer field.
+func (r *mutationResolver) RegisterPlayer(ctx context.Context, input model.NewPlayer) (*model.Player, error) {
+	// Check if player already exists
+	player := model.Player{}
+	r.db.Where("name = ?", input.Name).First(&player)
+	if player.ID != "" {
+		return nil, nil
+	}
+
+	player = model.Player{
 		ID:   uuid.New().String(),
 		Name: input.Name,
 	}
+
 	result := r.db.Create(&player)
 	if result.Error != nil {
 		return nil, result.Error

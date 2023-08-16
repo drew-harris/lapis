@@ -12,5 +12,5 @@ input NewPlayer {
 }
 
 extend type Mutation {
-  createPlayer(input: NewPlayer!): Player!
+  registerPlayer(input: NewPlayer!): Player!
 }
