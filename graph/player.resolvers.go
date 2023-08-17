@@ -6,7 +6,12 @@ package graph
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
+	"slices"
+
+	"github.com/99designs/gqlgen/graphql"
 	"github.com/drew-harris/lapis/graph/model"
 	"github.com/google/uuid"
 )
@@ -34,8 +39,17 @@ func (r *mutationResolver) RegisterPlayer(ctx context.Context, input model.NewPl
 
 // Players is the resolver for the players field.
 func (r *queryResolver) Players(ctx context.Context) ([]model.Player, error) {
+	fields := graphql.CollectAllFields(ctx)
+	fmt.Println(strings.Join(fields, " "))
+
+	db := r.db
+
+	if slices.Contains(fields, "logs") {
+		fmt.Println("preloading logs")
+		db = db.Preload("Logs")
+	}
 	players := []model.Player{}
-	result := r.db.Find(&players)
+	result := db.Find(&players)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -44,8 +58,18 @@ func (r *queryResolver) Players(ctx context.Context) ([]model.Player, error) {
 
 // Player is the resolver for the player field.
 func (r *queryResolver) Player(ctx context.Context, id string) (*model.Player, error) {
+	fields := graphql.CollectAllFields(ctx)
 	player := model.Player{}
-	result := r.db.Where("id = ?", id).First(&player)
+	fmt.Println(strings.Join(fields, " "))
+
+	db := r.db
+
+	if slices.Contains(fields, "logs") {
+		fmt.Println("preloading logs")
+		db = db.Preload("logs")
+	}
+
+	result := db.Where("id = ?", id).First(&player)
 	if result.Error != nil {
 		return nil, result.Error
 	}
