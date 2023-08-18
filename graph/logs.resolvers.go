@@ -20,7 +20,7 @@ import (
 func (r *mutationResolver) Log(ctx context.Context, input model.LogInput) (*model.Log, error) {
 	// Check if playerid is valid
 	player := model.Player{}
-	r.db.Where("id = ?", input.PlayerID).First(&player)
+	r.db.Where("name = ?", input.PlayerName).First(&player)
 	if r.db.Error != nil {
 		fmt.Println(r.db.Error)
 		return nil, r.db.Error
@@ -31,7 +31,7 @@ func (r *mutationResolver) Log(ctx context.Context, input model.LogInput) (*mode
 	log := model.Log{
 		ID:       uuid.New().String(),
 		Message:  input.Message,
-		PlayerID: input.PlayerID,
+		PlayerID: player.ID,
 	}
 
 	r.db.Create(&log)

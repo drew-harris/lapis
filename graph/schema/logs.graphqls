@@ -4,7 +4,7 @@ extend type Query {
 
 input LogInput {
   message: String!
-  playerId: ID!
+  playerName: String!
 }
 
 extend type Mutation {

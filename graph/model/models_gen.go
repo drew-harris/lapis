@@ -3,8 +3,8 @@
 package model
 
 type LogInput struct {
-	Message  string `json:"message"`
-	PlayerID string `json:"playerId"`
+	Message    string `json:"message"`
+	PlayerName string `json:"playerName"`
 }
 
 type NewPlayer struct {

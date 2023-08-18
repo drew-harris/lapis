@@ -7,9 +7,8 @@ package graph
 import (
 	"context"
 	"fmt"
-	"strings"
-
 	"slices"
+	"strings"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/drew-harris/lapis/graph/model"
