@@ -8,7 +8,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"slices"
+	"strings"
 
+	"github.com/99designs/gqlgen/graphql"
 	"github.com/drew-harris/lapis/graph/model"
 	"github.com/google/uuid"
 )
@@ -45,7 +48,12 @@ func (r *queryResolver) Logs(ctx context.Context, playerID *string) ([]model.Log
 	if playerID != nil {
 		db = db.Where("player_id = ?", *playerID)
 	}
-	result := db.Order("created_at desc").Joins("Player").Find(&logs) // TODO: Optimize this
+	fmt.Println(strings.Join(graphql.CollectAllFields(ctx), " "))
+	if slices.Contains(graphql.CollectAllFields(ctx), "player") {
+		fmt.Println("Preloading player")
+		db = db.Joins("Player")
+	}
+	result := db.Order("created_at desc").Find(&logs)
 	if result.Error != nil {
 		return nil, result.Error
 	}
