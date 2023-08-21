@@ -65,7 +65,7 @@ func (r *queryResolver) Player(ctx context.Context, id string) (*model.Player, e
 
 	if slices.Contains(fields, "logs") {
 		fmt.Println("preloading logs")
-		db = db.Preload("logs")
+		db = db.Preload("Logs")
 	}
 
 	result := db.Where("id = ?", id).First(&player)
