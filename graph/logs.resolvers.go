@@ -15,6 +15,7 @@ import (
 	"github.com/drew-harris/lapis/attributes"
 	"github.com/drew-harris/lapis/graph/model"
 	"github.com/google/uuid"
+	"gorm.io/datatypes"
 )
 
 // Player is the resolver for the player field.
@@ -72,17 +73,26 @@ func (r *mutationResolver) Log(ctx context.Context, input model.LogInput) (*mode
 }
 
 // Logs is the resolver for the logs field.
-func (r *queryResolver) Logs(ctx context.Context, playerID *string) ([]model.Log, error) {
+func (r *queryResolver) Logs(ctx context.Context, filter *model.LogQueryFilter) ([]model.Log, error) {
 	logs := []model.Log{}
 	db := r.db
-	if playerID != nil {
-		db = db.Where("player_id = ?", *playerID)
+	if filter != nil {
+		if filter.PlayerID != nil {
+			db = db.Where("player_id = ?", filter.PlayerID)
+		}
+		if filter.Type != nil {
+			db = db.Where("type = ?", filter.Type)
+		}
+		if filter.HasAttribute != nil {
+			db = db.Where(datatypes.JSONQuery("attributes").HasKey(*filter.HasAttribute))
+		}
 	}
 	fmt.Println(strings.Join(graphql.CollectAllFields(ctx), " "))
 	if slices.Contains(graphql.CollectAllFields(ctx), "player") {
 		fmt.Println("Preloading player")
 		db = db.Joins("Player")
 	}
+
 	result := db.Order("created_at desc").Find(&logs)
 	if result.Error != nil {
 		return nil, result.Error

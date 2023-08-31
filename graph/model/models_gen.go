@@ -15,6 +15,12 @@ type LogInput struct {
 	Attributes map[string]interface{} `json:"attributes,omitempty"`
 }
 
+type LogQueryFilter struct {
+	PlayerID     *string  `json:"playerId,omitempty"`
+	Type         *LogType `json:"type,omitempty"`
+	HasAttribute *string  `json:"hasAttribute,omitempty"`
+}
+
 type NewPlayer struct {
 	Name string `json:"name"`
 }
@@ -22,16 +28,22 @@ type NewPlayer struct {
 type LogType string
 
 const (
-	LogTypePlaceBlock LogType = "PlaceBlock"
+	LogTypePlaceBlock     LogType = "PlaceBlock"
+	LogTypeCollectItems   LogType = "CollectItems"
+	LogTypeMFPFinishTask  LogType = "MFPFinishTask"
+	LogTypeMFPGraphReview LogType = "MFPGraphReview"
 )
 
 var AllLogType = []LogType{
 	LogTypePlaceBlock,
+	LogTypeCollectItems,
+	LogTypeMFPFinishTask,
+	LogTypeMFPGraphReview,
 }
 
 func (e LogType) IsValid() bool {
 	switch e {
-	case LogTypePlaceBlock:
+	case LogTypePlaceBlock, LogTypeCollectItems, LogTypeMFPFinishTask, LogTypeMFPGraphReview:
 		return true
 	}
 	return false

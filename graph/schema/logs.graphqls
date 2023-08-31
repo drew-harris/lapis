@@ -1,5 +1,8 @@
 enum LogType {
   PlaceBlock
+  CollectItems
+  MFPFinishTask
+  MFPGraphReview
 }
 
 type Log {
@@ -12,8 +15,14 @@ type Log {
   attributes: Map
 }
 
+input LogQueryFilter {
+  playerId: String
+  type: LogType
+  hasAttribute: String
+}
+
 extend type Query {
-  logs(playerId: String): [Log!]!
+  logs(filter: LogQueryFilter): [Log!]!
 }
 
 input LogInput {
