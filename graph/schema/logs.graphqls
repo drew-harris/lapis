@@ -1,5 +1,10 @@
+enum LogType {
+  PlaceBlock
+}
+
 type Log {
   id: ID!
+  type: LogType!
   message: String!
   player: Player!
   playerId: String!
@@ -13,6 +18,7 @@ extend type Query {
 
 input LogInput {
   message: String!
+  type: LogType!
   playerName: String!
   attributes: Map
 }

@@ -61,6 +61,7 @@ func (r *mutationResolver) Log(ctx context.Context, input model.LogInput) (*mode
 		Message:    input.Message,
 		PlayerID:   player.ID,
 		Attributes: attributes,
+		Type:       input.Type,
 	}
 
 	r.db.Create(&log)

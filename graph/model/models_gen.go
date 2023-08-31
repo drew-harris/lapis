@@ -2,12 +2,58 @@
 
 package model
 
+import (
+	"fmt"
+	"io"
+	"strconv"
+)
+
 type LogInput struct {
 	Message    string                 `json:"message"`
+	Type       LogType                `json:"type"`
 	PlayerName string                 `json:"playerName"`
 	Attributes map[string]interface{} `json:"attributes,omitempty"`
 }
 
 type NewPlayer struct {
 	Name string `json:"name"`
+}
+
+type LogType string
+
+const (
+	LogTypePlaceBlock LogType = "PlaceBlock"
+)
+
+var AllLogType = []LogType{
+	LogTypePlaceBlock,
+}
+
+func (e LogType) IsValid() bool {
+	switch e {
+	case LogTypePlaceBlock:
+		return true
+	}
+	return false
+}
+
+func (e LogType) String() string {
+	return string(e)
+}
+
+func (e *LogType) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = LogType(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid LogType", str)
+	}
+	return nil
+}
+
+func (e LogType) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }

@@ -31,8 +31,11 @@ func main() {
 		panic(err)
 	}
 
-	db.AutoMigrate(&model.Player{})
-	db.AutoMigrate(&model.Log{})
+	if len(os.Args) > 1 && os.Args[1] == "migrate" {
+		db.AutoMigrate(&model.Player{})
+		db.AutoMigrate(&model.Log{})
+		return
+	}
 
 	resolver := graph.NewResolver(db)
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &resolver}))

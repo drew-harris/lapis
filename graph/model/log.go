@@ -13,4 +13,5 @@ type Log struct {
 	PlayerID   string         `json:"playerId" gorm:"size:255" gorm:"not null"`
 	CreatedAt  time.Time      `json:"createdAt" gorm:"not null"`
 	Attributes datatypes.JSON `json:"attributes"`
+	Type       LogType        `json:"string" gorm:"not null"`
 }
