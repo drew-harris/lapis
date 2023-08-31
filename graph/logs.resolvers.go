@@ -12,9 +12,33 @@ import (
 	"strings"
 
 	"github.com/99designs/gqlgen/graphql"
+	"github.com/drew-harris/lapis/attributes"
 	"github.com/drew-harris/lapis/graph/model"
 	"github.com/google/uuid"
 )
+
+// Player is the resolver for the player field.
+func (r *logResolver) Player(ctx context.Context, obj *model.Log) (*model.Player, error) {
+	if obj.Player != nil {
+		return obj.Player, nil
+	}
+	fmt.Println("Using long query")
+	player := model.Player{}
+	r.db.Where("id = ?", obj.PlayerID).First(&player)
+	if r.db.Error != nil {
+		return nil, r.db.Error
+	}
+	return &player, nil
+}
+
+// Attributes is the resolver for the attributes field.
+func (r *logResolver) Attributes(ctx context.Context, obj *model.Log) (map[string]interface{}, error) {
+	attributes, err := attributes.ToMap(obj.Attributes)
+	if err != nil {
+		return nil, err
+	}
+	return attributes, nil
+}
 
 // Log is the resolver for the log field.
 func (r *mutationResolver) Log(ctx context.Context, input model.LogInput) (*model.Log, error) {
@@ -28,10 +52,15 @@ func (r *mutationResolver) Log(ctx context.Context, input model.LogInput) (*mode
 	if player.ID == "" {
 		return nil, errors.New("Player id is not valid")
 	}
+	attributes, err := attributes.FromMap(input.Attributes)
+	if err != nil {
+		return nil, err
+	}
 	log := model.Log{
-		ID:       uuid.New().String(),
-		Message:  input.Message,
-		PlayerID: player.ID,
+		ID:         uuid.New().String(),
+		Message:    input.Message,
+		PlayerID:   player.ID,
+		Attributes: attributes,
 	}
 
 	r.db.Create(&log)
@@ -60,11 +89,15 @@ func (r *queryResolver) Logs(ctx context.Context, playerID *string) ([]model.Log
 	return logs, nil
 }
 
+// Log returns LogResolver implementation.
+func (r *Resolver) Log() LogResolver { return &logResolver{r} }
+
 // Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
+type logResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }

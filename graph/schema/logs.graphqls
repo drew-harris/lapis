@@ -1,3 +1,12 @@
+type Log {
+  id: ID!
+  message: String!
+  player: Player!
+  playerId: String!
+  createdAt: Time!
+  attributes: Map
+}
+
 extend type Query {
   logs(playerId: String): [Log!]!
 }
@@ -5,6 +14,7 @@ extend type Query {
 input LogInput {
   message: String!
   playerName: String!
+  attributes: Map
 }
 
 extend type Mutation {

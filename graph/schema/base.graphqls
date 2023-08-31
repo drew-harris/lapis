@@ -1,16 +1,2 @@
 scalar Time
-
-type Log {
-  id: ID!
-  message: String!
-  player: Player!
-  playerId: String!
-  createdAt: Time!
-}
-
-type Player {
-  id: ID!
-  name: String!
-  logs: [Log!]!
-  createdAt: Time!
-}
+scalar Map

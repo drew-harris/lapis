@@ -94,3 +94,5 @@ models:
     fields:
       player:
         resolver: true
+      attributes:
+        resolver: true

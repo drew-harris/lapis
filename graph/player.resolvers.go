@@ -36,6 +36,22 @@ func (r *mutationResolver) RegisterPlayer(ctx context.Context, input model.NewPl
 	return &player, nil
 }
 
+// Logs is the resolver for the logs field.
+func (r *playerResolver) Logs(ctx context.Context, obj *model.Player) ([]model.Log, error) {
+	if obj.Logs != nil {
+		return *obj.Logs, nil
+	}
+
+	// Get the logs for a player
+	logs := []model.Log{}
+	fmt.Println("Extra resolver: getting logs for player")
+	r.db.Order("created_at desc").Where("player_id = ?", obj.ID).Find(&logs)
+	if r.db.Error != nil {
+		return nil, r.db.Error
+	}
+	return logs, nil
+}
+
 // Players is the resolver for the players field.
 func (r *queryResolver) Players(ctx context.Context) ([]model.Player, error) {
 	fields := graphql.CollectAllFields(ctx)
@@ -74,3 +90,8 @@ func (r *queryResolver) Player(ctx context.Context, id string) (*model.Player, e
 	}
 	return &player, nil
 }
+
+// Player returns PlayerResolver implementation.
+func (r *Resolver) Player() PlayerResolver { return &playerResolver{r} }
+
+type playerResolver struct{ *Resolver }
