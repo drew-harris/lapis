@@ -7,6 +7,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/joho/godotenv v1.5.1
 	github.com/vektah/gqlparser/v2 v2.5.8
+	gorm.io/datatypes v1.2.0
 	gorm.io/driver/mysql v1.5.1
 	gorm.io/gorm v1.25.3
 )

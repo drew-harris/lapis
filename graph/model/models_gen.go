@@ -3,8 +3,9 @@
 package model
 
 type LogInput struct {
-	Message    string `json:"message"`
-	PlayerName string `json:"playerName"`
+	Message    string                 `json:"message"`
+	PlayerName string                 `json:"playerName"`
+	Attributes map[string]interface{} `json:"attributes,omitempty"`
 }
 
 type NewPlayer struct {

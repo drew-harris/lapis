@@ -2,6 +2,13 @@
 #
 # https://gqlgen.com/getting-started/
 
+type Player {
+  id: ID!
+  name: String!
+  logs: [Log!]!
+  createdAt: Time!
+}
+
 extend type Query {
   players: [Player!]!
   player(id: ID!): Player!
