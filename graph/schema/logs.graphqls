@@ -8,7 +8,7 @@ enum LogType {
 type Log {
   id: ID!
   type: LogType!
-  message: String!
+  message: String
   player: Player!
   playerId: String!
   createdAt: Time!
@@ -26,7 +26,7 @@ extend type Query {
 }
 
 input LogInput {
-  message: String!
+  message: String
   type: LogType!
   playerName: String!
   attributes: Map

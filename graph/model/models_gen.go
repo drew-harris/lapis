@@ -9,7 +9,7 @@ import (
 )
 
 type LogInput struct {
-	Message    string                 `json:"message"`
+	Message    *string                `json:"message,omitempty"`
 	Type       LogType                `json:"type"`
 	PlayerName string                 `json:"playerName"`
 	Attributes map[string]interface{} `json:"attributes,omitempty"`
