@@ -53,11 +53,20 @@ func (r *playerResolver) Logs(ctx context.Context, obj *model.Player) ([]model.L
 }
 
 // Players is the resolver for the players field.
-func (r *queryResolver) Players(ctx context.Context) ([]model.Player, error) {
+func (r *queryResolver) Players(ctx context.Context, limit *model.LimitFilter) ([]model.Player, error) {
 	fields := graphql.CollectAllFields(ctx)
 	fmt.Println(strings.Join(fields, " "))
 
 	db := r.db
+
+	if limit != nil {
+		if limit.Limit != nil {
+			db = db.Limit(*limit.Limit)
+		}
+		if limit.Page != nil {
+			db = db.Offset((*limit.Page - 1) * *limit.Limit)
+		}
+	}
 
 	if slices.Contains(fields, "logs") {
 		fmt.Println("preloading logs")

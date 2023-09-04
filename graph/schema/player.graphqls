@@ -10,7 +10,7 @@ type Player {
 }
 
 extend type Query {
-  players: [Player!]!
+  players(limit: LimitFilter): [Player!]!
   player(id: ID!): Player!
 }
 

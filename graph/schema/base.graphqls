@@ -1,2 +1,7 @@
 scalar Time
 scalar Map
+
+input LimitFilter {
+  limit: Int
+  page: Int
+}

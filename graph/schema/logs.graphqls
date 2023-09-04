@@ -22,7 +22,7 @@ input LogQueryFilter {
 }
 
 extend type Query {
-  logs(filter: LogQueryFilter): [Log!]!
+  logs(filter: LogQueryFilter, limit: LimitFilter): [Log!]!
 }
 
 input LogInput {

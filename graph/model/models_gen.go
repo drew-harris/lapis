@@ -8,6 +8,11 @@ import (
 	"strconv"
 )
 
+type LimitFilter struct {
+	Limit *int `json:"limit,omitempty"`
+	Page  *int `json:"page,omitempty"`
+}
+
 type LogInput struct {
 	Message    *string                `json:"message,omitempty"`
 	Type       LogType                `json:"type"`

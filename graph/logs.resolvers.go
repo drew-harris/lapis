@@ -73,7 +73,7 @@ func (r *mutationResolver) Log(ctx context.Context, input model.LogInput) (*mode
 }
 
 // Logs is the resolver for the logs field.
-func (r *queryResolver) Logs(ctx context.Context, filter *model.LogQueryFilter) ([]model.Log, error) {
+func (r *queryResolver) Logs(ctx context.Context, filter *model.LogQueryFilter, limit *model.LimitFilter) ([]model.Log, error) {
 	logs := []model.Log{}
 	db := r.db
 	if filter != nil {
@@ -87,6 +87,16 @@ func (r *queryResolver) Logs(ctx context.Context, filter *model.LogQueryFilter) 
 			db = db.Where(datatypes.JSONQuery("attributes").HasKey(*filter.HasAttribute))
 		}
 	}
+
+	if limit != nil {
+		if limit.Limit != nil {
+			db = db.Limit(*limit.Limit)
+		}
+		if limit.Page != nil {
+			db = db.Offset((*limit.Page - 1) * *limit.Limit)
+		}
+	}
+
 	fmt.Println(strings.Join(graphql.CollectAllFields(ctx), " "))
 	if slices.Contains(graphql.CollectAllFields(ctx), "player") {
 		fmt.Println("Preloading player")
