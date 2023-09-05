@@ -21,9 +21,9 @@ type LogInput struct {
 }
 
 type LogQueryFilter struct {
-	PlayerID     *string  `json:"playerId,omitempty"`
-	Type         *LogType `json:"type,omitempty"`
-	HasAttribute *string  `json:"hasAttribute,omitempty"`
+	PlayerID     *string   `json:"playerId,omitempty"`
+	Type         []LogType `json:"type,omitempty"`
+	HasAttribute *string   `json:"hasAttribute,omitempty"`
 }
 
 type NewPlayer struct {

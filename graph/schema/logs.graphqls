@@ -17,7 +17,7 @@ type Log {
 
 input LogQueryFilter {
   playerId: String
-  type: LogType
+  type: [LogType!]
   hasAttribute: String
 }
 

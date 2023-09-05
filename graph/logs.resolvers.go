@@ -81,7 +81,7 @@ func (r *queryResolver) Logs(ctx context.Context, filter *model.LogQueryFilter, 
 			db = db.Where("player_id = ?", filter.PlayerID)
 		}
 		if filter.Type != nil {
-			db = db.Where("type = ?", filter.Type)
+			db = db.Where("type in ?", filter.Type)
 		}
 		if filter.HasAttribute != nil {
 			db = db.Where(datatypes.JSONQuery("attributes").HasKey(*filter.HasAttribute))
