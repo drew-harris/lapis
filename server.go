@@ -35,6 +35,7 @@ func main() {
 
 	if len(os.Args) > 1 && os.Args[1] == "migrate" {
 		db.AutoMigrate(&model.Player{})
+		db.AutoMigrate(&model.Save{})
 		db.AutoMigrate(&model.Log{})
 		return
 	}

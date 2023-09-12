@@ -52,6 +52,22 @@ func (r *playerResolver) Logs(ctx context.Context, obj *model.Player) ([]model.L
 	return logs, nil
 }
 
+// Saves is the resolver for the saves field.
+func (r *playerResolver) Saves(ctx context.Context, obj *model.Player) ([]model.Save, error) {
+	if obj.Saves != nil {
+		return *obj.Saves, nil
+	}
+
+	// Get the logs for a player
+	saves := []model.Save{}
+	fmt.Println("Extra resolver: getting graphs for player")
+	r.db.Order("created_at desc").Where("player_id = ?", obj.ID).Find(&saves)
+	if r.db.Error != nil {
+		return nil, r.db.Error
+	}
+	return saves, nil
+}
+
 // Players is the resolver for the players field.
 func (r *queryResolver) Players(ctx context.Context, limit *model.LimitFilter) ([]model.Player, error) {
 	fields := graphql.CollectAllFields(ctx)
@@ -71,6 +87,11 @@ func (r *queryResolver) Players(ctx context.Context, limit *model.LimitFilter) (
 	if slices.Contains(fields, "logs") {
 		fmt.Println("preloading logs")
 		db = db.Preload("Logs")
+	}
+	if slices.Contains(fields, "saves") {
+		fmt.Println("preloading saves")
+		db = db.Preload("Saves")
+
 	}
 	players := []model.Player{}
 	result := db.Find(&players)

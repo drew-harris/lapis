@@ -1,0 +1,11 @@
+type Save {
+  id: ID!
+  name: String!
+  player: Player!
+  playerId: String!
+
+  createdAt: Time!
+  updatedAt: Time!
+
+  graphData: Map!
+}

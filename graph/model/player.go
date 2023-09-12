@@ -7,4 +7,5 @@ type Player struct {
 	Name      string    `json:"name" gorm:"not null"`
 	CreatedAt time.Time `json:"createdAt" gorm:"not null"`
 	Logs      *[]Log    `json:"logs" gorm:"foreignKey:PlayerID;references:ID"`
+	Saves     *[]Save   `json:"saves" gorm:"foreignKey:PlayerID;references:ID"`
 }
