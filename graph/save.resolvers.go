@@ -15,7 +15,6 @@ import (
 
 // CreateNewSave is the resolver for the createNewSave field.
 func (r *mutationResolver) CreateNewSave(ctx context.Context, input model.NewSave) (*model.Save, error) {
-
 	// Check if player is valid
 	player := model.Player{}
 	r.db.Where("id = ?", input.PlayerID).First(&player)
@@ -68,7 +67,6 @@ func (r *mutationResolver) UpdateSave(ctx context.Context, id string, graphData 
 }
 
 // DeleteSave is the resolver for the deleteSave field.
-// TODO: Use inline delete method
 func (r *mutationResolver) DeleteSave(ctx context.Context, id string) (bool, error) {
 	r.db.Where("id = ?", id).Delete(&model.Save{})
 
