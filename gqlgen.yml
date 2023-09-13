@@ -90,9 +90,15 @@ models:
     fields:
       logs:
         resolver: true
+      saves:
+        resolver: true
   Log:
     fields:
       player:
         resolver: true
       attributes:
+        resolver: true
+  Save:
+    fields:
+      player:
         resolver: true

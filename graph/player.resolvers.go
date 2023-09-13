@@ -24,8 +24,16 @@ func (r *mutationResolver) RegisterPlayer(ctx context.Context, input model.NewPl
 		return &player, nil
 	}
 
+	var id string
+	if input.ID != nil {
+		id = *input.ID
+	} else {
+		// TODO: Replace with mojang api call
+		id = uuid.New().String()
+	}
+
 	player = model.Player{
-		ID:   uuid.New().String(),
+		ID:   id,
 		Name: input.Name,
 	}
 
@@ -33,6 +41,28 @@ func (r *mutationResolver) RegisterPlayer(ctx context.Context, input model.NewPl
 	if result.Error != nil {
 		return nil, result.Error
 	}
+	return &player, nil
+}
+
+// LoginOrCreate is the resolver for the loginOrCreate field.
+func (r *mutationResolver) LoginOrCreate(ctx context.Context, playerName string) (*model.Player, error) {
+	// Check for existing playerName
+	player := model.Player{}
+	r.db.Where("name = ?", playerName).First(&player)
+	if r.db.Error != nil {
+		return nil, r.db.Error
+	}
+	if player.ID != "" {
+		return &player, nil
+	}
+
+	// Create new player
+	id := uuid.New().String()
+	player = model.Player{
+		ID:   id,
+		Name: playerName,
+	}
+
 	return &player, nil
 }
 
@@ -50,6 +80,22 @@ func (r *playerResolver) Logs(ctx context.Context, obj *model.Player) ([]model.L
 		return nil, r.db.Error
 	}
 	return logs, nil
+}
+
+// Saves is the resolver for the saves field.
+func (r *playerResolver) Saves(ctx context.Context, obj *model.Player) ([]model.Save, error) {
+	if obj.Saves != nil {
+		return *obj.Saves, nil
+	}
+
+	// Get the logs for a player
+	saves := []model.Save{}
+	fmt.Println("Extra resolver: getting graphs for player")
+	r.db.Order("created_at desc").Where("player_id = ?", obj.ID).Find(&saves)
+	if r.db.Error != nil {
+		return nil, r.db.Error
+	}
+	return saves, nil
 }
 
 // Players is the resolver for the players field.
@@ -72,11 +118,18 @@ func (r *queryResolver) Players(ctx context.Context, limit *model.LimitFilter) (
 		fmt.Println("preloading logs")
 		db = db.Preload("Logs")
 	}
+	if slices.Contains(fields, "saves") {
+		fmt.Println("preloading saves")
+		db = db.Preload("Saves")
+	}
+
 	players := []model.Player{}
 	result := db.Find(&players)
+
 	if result.Error != nil {
 		return nil, result.Error
 	}
+
 	return players, nil
 }
 

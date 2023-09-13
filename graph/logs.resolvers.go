@@ -12,8 +12,8 @@ import (
 	"strings"
 
 	"github.com/99designs/gqlgen/graphql"
-	"github.com/drew-harris/lapis/attributes"
 	"github.com/drew-harris/lapis/graph/model"
+	"github.com/drew-harris/lapis/maps"
 	"github.com/google/uuid"
 	"gorm.io/datatypes"
 )
@@ -34,7 +34,7 @@ func (r *logResolver) Player(ctx context.Context, obj *model.Log) (*model.Player
 
 // Attributes is the resolver for the attributes field.
 func (r *logResolver) Attributes(ctx context.Context, obj *model.Log) (map[string]interface{}, error) {
-	attributes, err := attributes.ToMap(obj.Attributes)
+	attributes, err := maps.ToMap(obj.Attributes)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +53,7 @@ func (r *mutationResolver) Log(ctx context.Context, input model.LogInput) (*mode
 	if player.ID == "" {
 		return nil, errors.New("Player id is not valid")
 	}
-	attributes, err := attributes.FromMap(input.Attributes)
+	attributes, err := maps.FromMap(input.Attributes)
 	if err != nil {
 		return nil, err
 	}

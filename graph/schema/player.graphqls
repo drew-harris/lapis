@@ -6,6 +6,7 @@ type Player {
   id: ID!
   name: String!
   logs: [Log!]!
+  saves: [Save!]!
   createdAt: Time!
 }
 
@@ -16,8 +17,10 @@ extend type Query {
 
 input NewPlayer {
   name: String!
+  id: String
 }
 
 extend type Mutation {
   registerPlayer(input: NewPlayer!): Player!
+  loginOrCreate(playerName: String!): Player!
 }
