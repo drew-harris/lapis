@@ -9,3 +9,20 @@ type Save {
 
   graphData: Map!
 }
+
+extend type Query {
+  saves: [Save!]!
+  save(id: ID!): Save!
+}
+
+input NewSave {
+  name: String!
+  playerId: String!
+  graphData: Map!
+}
+
+extend type Mutation {
+  createNewSave(input: NewSave!): Save!
+  updateSave(id: String!, graphData: Map!): Save!
+  deleteSave(id: String!): Boolean!
+}

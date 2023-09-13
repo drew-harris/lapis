@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 type Player struct {
 	ID        string    `json:"id" gorm:"primaryKey;not null;size:255"`

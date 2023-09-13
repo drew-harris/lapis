@@ -27,7 +27,14 @@ type LogQueryFilter struct {
 }
 
 type NewPlayer struct {
-	Name string `json:"name"`
+	Name string  `json:"name"`
+	ID   *string `json:"id,omitempty"`
+}
+
+type NewSave struct {
+	Name      string                 `json:"name"`
+	PlayerID  string                 `json:"playerId"`
+	GraphData map[string]interface{} `json:"graphData"`
 }
 
 type LogType string

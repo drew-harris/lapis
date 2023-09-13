@@ -10,7 +10,94 @@ import (
 
 	"github.com/drew-harris/lapis/graph/model"
 	"github.com/drew-harris/lapis/maps"
+	"github.com/google/uuid"
 )
+
+// CreateNewSave is the resolver for the createNewSave field.
+func (r *mutationResolver) CreateNewSave(ctx context.Context, input model.NewSave) (*model.Save, error) {
+
+	// Check if player is valid
+	player := model.Player{}
+	r.db.Where("id = ?", input.PlayerID).First(&player)
+	if r.db.Error != nil {
+		return nil, r.db.Error
+	}
+	if player.ID == "" {
+		return nil, fmt.Errorf("Player id is not valid")
+	}
+
+	graphDataJson, err := maps.FromMap(input.GraphData)
+	fmt.Println("GRAPH DATA JSON: ", graphDataJson.String())
+	if err != nil {
+		return nil, err
+	}
+
+	created := model.Save{
+		ID:        uuid.New().String(),
+		Name:      input.Name,
+		PlayerID:  player.ID,
+		GraphData: graphDataJson,
+	}
+
+	result := r.db.Create(&created)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &created, nil
+}
+
+// UpdateSave is the resolver for the updateSave field.
+func (r *mutationResolver) UpdateSave(ctx context.Context, id string, graphData map[string]interface{}) (*model.Save, error) {
+	graphDataJson, err := maps.FromMap(graphData)
+	if err != nil {
+		return nil, err
+	}
+	save := model.Save{}
+	r.db.Where("id = ?", id).First(&save)
+
+	save.GraphData = graphDataJson
+
+	r.db.Save(&save)
+	if r.db.Error != nil {
+		return nil, r.db.Error
+	}
+
+	return &save, nil
+}
+
+// DeleteSave is the resolver for the deleteSave field.
+// TODO: Use inline delete method
+func (r *mutationResolver) DeleteSave(ctx context.Context, id string) (bool, error) {
+	r.db.Where("id = ?", id).Delete(&model.Save{})
+
+	if r.db.Error != nil {
+		return false, r.db.Error
+	}
+
+	return true, nil
+}
+
+// Saves is the resolver for the saves field.
+func (r *queryResolver) Saves(ctx context.Context) ([]model.Save, error) {
+	saves := []model.Save{}
+	r.db.Find(&saves)
+	if r.db.Error != nil {
+		return nil, r.db.Error
+	}
+	return saves, nil
+}
+
+// Save is the resolver for the save field.
+func (r *queryResolver) Save(ctx context.Context, id string) (*model.Save, error) {
+	save := model.Save{}
+	r.db.Where("id = ?", id).First(&save)
+	if r.db.Error != nil {
+		return nil, r.db.Error
+	}
+	return &save, nil
+}
 
 // Player is the resolver for the player field.
 func (r *saveResolver) Player(ctx context.Context, obj *model.Save) (*model.Player, error) {
