@@ -71,6 +71,11 @@ func (r *mutationResolver) LoginOrCreate(ctx context.Context, playerName string)
 		Name: playerName,
 	}
 
+	r.db.Create(&player)
+	if r.db.Error != nil {
+		return nil, r.db.Error
+	}
+
 	return &player, nil
 }
 
