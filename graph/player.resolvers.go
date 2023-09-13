@@ -6,13 +6,14 @@ package graph
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"slices"
 	"strings"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/drew-harris/lapis/graph/model"
-	"github.com/google/uuid"
+	"github.com/drew-harris/lapis/mojang"
 )
 
 // RegisterPlayer is the resolver for the registerPlayer field.
@@ -29,7 +30,11 @@ func (r *mutationResolver) RegisterPlayer(ctx context.Context, input model.NewPl
 		id = *input.ID
 	} else {
 		// TODO: Replace with mojang api call
-		id = uuid.New().String()
+		mojangUUID, err := mojang.GetUUID(input.Name)
+		if err != nil {
+			return nil, errors.New("Could not get UUID from Mojang")
+		}
+		id = mojangUUID
 	}
 
 	player = model.Player{
@@ -57,10 +62,18 @@ func (r *mutationResolver) LoginOrCreate(ctx context.Context, playerName string)
 	}
 
 	// Create new player
-	id := uuid.New().String()
+	mojangUUID, err := mojang.GetUUID(playerName)
+	if err != nil {
+		return nil, err
+	}
 	player = model.Player{
-		ID:   id,
+		ID:   mojangUUID,
 		Name: playerName,
+	}
+
+	r.db.Create(&player)
+	if r.db.Error != nil {
+		return nil, r.db.Error
 	}
 
 	return &player, nil
