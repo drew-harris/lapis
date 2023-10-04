@@ -11,7 +11,7 @@ type Save {
 }
 
 extend type Query {
-  saves: [Save!]!
+  saves(playerId: String): [Save!]!
   save(id: ID!): Save!
 }
 

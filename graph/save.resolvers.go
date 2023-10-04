@@ -78,9 +78,13 @@ func (r *mutationResolver) DeleteSave(ctx context.Context, id string) (bool, err
 }
 
 // Saves is the resolver for the saves field.
-func (r *queryResolver) Saves(ctx context.Context) ([]model.Save, error) {
+func (r *queryResolver) Saves(ctx context.Context, playerID *string) ([]model.Save, error) {
 	saves := []model.Save{}
-	r.db.Find(&saves)
+	db := r.db
+	if playerID != nil {
+		db = db.Where("player_id = ?", *playerID)
+	}
+	db.Find(&saves)
 	if r.db.Error != nil {
 		return nil, r.db.Error
 	}
