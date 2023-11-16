@@ -25,6 +25,7 @@ input NewCustomNode {
   name: String!
   playerId: String!
   graphData: Map!
+  recipeData: Map!
 }
 
 extend type Mutation {
@@ -43,4 +44,5 @@ type CustomNode {
   createdAt: Time!
   updatedAt: Time!
   graphData: Map!
+  recipeData: Map!
 }

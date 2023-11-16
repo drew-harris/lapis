@@ -23,6 +23,15 @@ func (r *customNodeResolver) GraphData(ctx context.Context, obj *model.CustomNod
 	return graphData, nil
 }
 
+// RecipeData is the resolver for the recipeData field.
+func (r *customNodeResolver) RecipeData(ctx context.Context, obj *model.CustomNode) (map[string]interface{}, error) {
+	graphData, err := maps.ToMap(obj.RecipeData)
+	if err != nil {
+		return nil, err
+	}
+	return graphData, nil
+}
+
 // CreateNewSave is the resolver for the createNewSave field.
 func (r *mutationResolver) CreateNewSave(ctx context.Context, input model.NewSave) (*model.Save, error) {
 	// Check if player is valid

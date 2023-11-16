@@ -27,9 +27,10 @@ type LogQueryFilter struct {
 }
 
 type NewCustomNode struct {
-	Name      string                 `json:"name"`
-	PlayerID  string                 `json:"playerId"`
-	GraphData map[string]interface{} `json:"graphData"`
+	Name       string                 `json:"name"`
+	PlayerID   string                 `json:"playerId"`
+	GraphData  map[string]interface{} `json:"graphData"`
+	RecipeData map[string]interface{} `json:"recipeData"`
 }
 
 type NewPlayer struct {
