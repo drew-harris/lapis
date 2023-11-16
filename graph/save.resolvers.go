@@ -7,11 +7,21 @@ package graph
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/drew-harris/lapis/graph/model"
 	"github.com/drew-harris/lapis/maps"
 	"github.com/google/uuid"
 )
+
+// GraphData is the resolver for the graphData field.
+func (r *customNodeResolver) GraphData(ctx context.Context, obj *model.CustomNode) (map[string]interface{}, error) {
+	graphData, err := maps.ToMap(obj.GraphData)
+	if err != nil {
+		return nil, err
+	}
+	return graphData, nil
+}
 
 // CreateNewSave is the resolver for the createNewSave field.
 func (r *mutationResolver) CreateNewSave(ctx context.Context, input model.NewSave) (*model.Save, error) {
@@ -77,6 +87,40 @@ func (r *mutationResolver) DeleteSave(ctx context.Context, id string) (bool, err
 	return true, nil
 }
 
+// CreateCustomNode is the resolver for the createCustomNode field.
+func (r *mutationResolver) CreateCustomNode(ctx context.Context, input model.NewCustomNode) (*model.CustomNode, error) {
+	log.Println("Creating custom node")
+	player := model.Player{}
+	r.db.Where("id = ?", input.PlayerID).First(&player)
+	if r.db.Error != nil {
+		return nil, r.db.Error
+	}
+	if player.ID == "" {
+		return nil, fmt.Errorf("Player id is not valid")
+	}
+
+	graphDataJson, err := maps.FromMap(input.GraphData)
+	fmt.Println("GRAPH DATA JSON: ", graphDataJson.String())
+	if err != nil {
+		return nil, err
+	}
+
+	created := model.CustomNode{
+		ID:        uuid.New().String(),
+		Name:      input.Name,
+		PlayerID:  player.ID,
+		GraphData: graphDataJson,
+	}
+
+	result := r.db.Create(&created)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &created, nil
+}
+
 // Saves is the resolver for the saves field.
 func (r *queryResolver) Saves(ctx context.Context, playerID *string) ([]model.Save, error) {
 	saves := []model.Save{}
@@ -124,7 +168,11 @@ func (r *saveResolver) GraphData(ctx context.Context, obj *model.Save) (map[stri
 	return graphData, nil
 }
 
+// CustomNode returns CustomNodeResolver implementation.
+func (r *Resolver) CustomNode() CustomNodeResolver { return &customNodeResolver{r} }
+
 // Save returns SaveResolver implementation.
 func (r *Resolver) Save() SaveResolver { return &saveResolver{r} }
 
+type customNodeResolver struct{ *Resolver }
 type saveResolver struct{ *Resolver }

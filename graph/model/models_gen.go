@@ -26,6 +26,12 @@ type LogQueryFilter struct {
 	HasAttribute *string   `json:"hasAttribute,omitempty"`
 }
 
+type NewCustomNode struct {
+	Name      string                 `json:"name"`
+	PlayerID  string                 `json:"playerId"`
+	GraphData map[string]interface{} `json:"graphData"`
+}
+
 type NewPlayer struct {
 	Name string  `json:"name"`
 	ID   *string `json:"id,omitempty"`

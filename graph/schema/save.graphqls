@@ -21,8 +21,26 @@ input NewSave {
   graphData: Map!
 }
 
+input NewCustomNode {
+  name: String!
+  playerId: String!
+  graphData: Map!
+}
+
 extend type Mutation {
   createNewSave(input: NewSave!): Save!
   updateSave(id: String!, graphData: Map!): Save!
   deleteSave(id: String!): Boolean!
+
+  createCustomNode(input: NewCustomNode!): CustomNode!
+}
+
+type CustomNode {
+  id: ID!
+  name: String!
+  player: Player!
+  playerId: String!
+  createdAt: Time!
+  updatedAt: Time!
+  graphData: Map!
 }
