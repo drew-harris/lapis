@@ -113,12 +113,18 @@ func (r *mutationResolver) CreateCustomNode(ctx context.Context, input model.New
 	if err != nil {
 		return nil, err
 	}
+	recipeDataJson, err := maps.FromMap(input.RecipeData)
+	fmt.Println("GRAPH DATA JSON: ", recipeDataJson.String())
+	if err != nil {
+		return nil, err
+	}
 
 	created := model.CustomNode{
-		ID:        uuid.New().String(),
-		Name:      input.Name,
-		PlayerID:  player.ID,
-		GraphData: graphDataJson,
+		ID:         uuid.New().String(),
+		Name:       input.Name,
+		PlayerID:   player.ID,
+		GraphData:  graphDataJson,
+		RecipeData: recipeDataJson,
 	}
 
 	result := r.db.Create(&created)

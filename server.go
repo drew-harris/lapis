@@ -37,6 +37,7 @@ func main() {
 		db.AutoMigrate(&model.Player{})
 		db.AutoMigrate(&model.Save{})
 		db.AutoMigrate(&model.Log{})
+		db.AutoMigrate(&model.CustomNode{})
 		return
 	}
 
