@@ -13,6 +13,8 @@ type Save {
 extend type Query {
   saves(playerId: String): [Save!]!
   save(id: ID!): Save!
+
+  customNodes(playerId: String): [CustomNode!]!
 }
 
 input NewSave {

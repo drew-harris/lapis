@@ -160,6 +160,20 @@ func (r *queryResolver) Save(ctx context.Context, id string) (*model.Save, error
 	return &save, nil
 }
 
+// CustomNodes is the resolver for the customNodes field.
+func (r *queryResolver) CustomNodes(ctx context.Context, playerID *string) ([]model.CustomNode, error) {
+	nodes := []model.CustomNode{}
+	db := r.db
+	if playerID != nil {
+		db = db.Where("player_id = ?", *playerID)
+	}
+	db.Find(&nodes)
+	if r.db.Error != nil {
+		return nil, r.db.Error
+	}
+	return nodes, nil
+}
+
 // Player is the resolver for the player field.
 func (r *saveResolver) Player(ctx context.Context, obj *model.Save) (*model.Player, error) {
 	if obj.Player != nil {
