@@ -10,6 +10,7 @@ import (
 	"github.com/drew-harris/lapis/code"
 	"github.com/drew-harris/lapis/graph"
 	"github.com/drew-harris/lapis/graph/model"
+	"github.com/drew-harris/lapis/players"
 	"github.com/gofiber/template/html/v2"
 
 	"github.com/gofiber/fiber/v2"
@@ -59,7 +60,17 @@ func main() {
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &resolver}))
 
 	app.Get("/codes", func(c *fiber.Ctx) error {
-		return c.Render("code", nil)
+		players, err := players.GetAllPlayers(db)
+		if err != nil {
+			return err
+		}
+		return c.Render("code", fiber.Map{
+			"players": players,
+		})
+	})
+
+	app.Get("/styles.css", func(c *fiber.Ctx) error {
+		return c.SendFile("./views/styles.css")
 	})
 
 	app.Post("/hx/setup", func(c *fiber.Ctx) error {
@@ -73,8 +84,8 @@ func main() {
 			return err
 		}
 		return c.Render("result", fiber.Map{
-			"code": player.ID,
-			"name": player.Name,
+			"ID":   player.ID,
+			"Name": player.Name,
 		})
 	})
 
