@@ -1,17 +1,18 @@
 package main
 
 import (
+	"fmt"
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/drew-harris/lapis/graph"
 	"github.com/drew-harris/lapis/graph/model"
-	"github.com/go-chi/chi/v5"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/adaptor"
+
 	"github.com/joho/godotenv"
-	"github.com/rs/cors"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -27,9 +28,12 @@ func main() {
 		port = defaultPort
 	}
 
+	app := fiber.New()
+
 	dsn := os.Getenv("DATABASE_URL")
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
+		_ = fmt.Errorf("failed to connect database")
 		panic(err)
 	}
 
@@ -41,22 +45,26 @@ func main() {
 		return
 	}
 
-	router := chi.NewRouter()
-
-	router.Use(cors.New(cors.Options{}).Handler)
-
 	resolver := graph.NewResolver(db)
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &resolver}))
 
-	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	router.Handle("/query", srv)
+	app.Get("/test", func(c *fiber.Ctx) error {
+		return c.SendString("Hello, World 👋!")
+	})
 
-	router.Handle("/codes", http.HandlerFunc(
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte("Hello, World!"))
-		},
-	))
+	// Handle fiber with gql
+	app.Use("/query", func(c *fiber.Ctx) error {
+		test := adaptor.HTTPHandler(srv)
+		return test(c)
+	})
+
+	// Handle fiber with gql
+	app.Use("/", func(c *fiber.Ctx) error {
+		test := adaptor.HTTPHandler(playground.Handler("Graphql playground", "/query"))
+		return test(c)
+	})
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, router))
+
+	app.Listen(":" + port)
 }
