@@ -19,8 +19,3 @@ input NewPlayer {
   name: String!
   id: String
 }
-
-extend type Mutation {
-  registerPlayer(input: NewPlayer!): Player!
-  loginOrCreate(playerName: String!): Player!
-}

@@ -7,8 +7,11 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/drew-harris/lapis/code"
 	"github.com/drew-harris/lapis/graph"
 	"github.com/drew-harris/lapis/graph/model"
+	"github.com/gofiber/template/html/v2"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/adaptor"
 
@@ -19,6 +22,10 @@ import (
 
 const defaultPort = "8080"
 
+type CreatePlayerInput struct {
+	Name string `json:"name"`
+}
+
 func main() {
 	//Load env safely
 	err := godotenv.Load()
@@ -28,7 +35,10 @@ func main() {
 		port = defaultPort
 	}
 
-	app := fiber.New()
+	engine := html.New("./views/", ".html")
+	app := fiber.New(fiber.Config{
+		Views: engine,
+	})
 
 	dsn := os.Getenv("DATABASE_URL")
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -48,8 +58,24 @@ func main() {
 	resolver := graph.NewResolver(db)
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &resolver}))
 
-	app.Get("/test", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World 👋!")
+	app.Get("/codes", func(c *fiber.Ctx) error {
+		return c.Render("code", nil)
+	})
+
+	app.Post("/hx/setup", func(c *fiber.Ctx) error {
+		playerInput := CreatePlayerInput{}
+		if err := c.BodyParser(&playerInput); err != nil {
+			return err
+		}
+
+		player, err := code.RegisterPlayerWithNewCode(playerInput.Name, db)
+		if err != nil {
+			return err
+		}
+		return c.Render("result", fiber.Map{
+			"code": player.ID,
+			"name": player.Name,
+		})
 	})
 
 	// Handle fiber with gql

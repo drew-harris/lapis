@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title></title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://unpkg.com/htmx.org@1.9.9"
+    integrity="sha384-QFjmbokDn2DjBjq+fM+8LUIVrAgqcNW2s0PjAxHETgRn9l4fvX31ZxDxvwQnyMOX"
+    crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <h1>Setup players</h1>
+  <form hx-post="/hx/setup" hx-on::after-request="this.reset()" hx-swap="afterbegin" hx-target="#result">
+    <label for="name">Name</label>
+    <input type="text" name="name" />
+    <button type="submit">Submit</button>
+  </form>
+  <div id="result"></div>
+</body>
+
+</html>

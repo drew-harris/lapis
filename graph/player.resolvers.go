@@ -6,78 +6,13 @@ package graph
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"slices"
 	"strings"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/drew-harris/lapis/graph/model"
-	"github.com/drew-harris/lapis/mojang"
 )
-
-// RegisterPlayer is the resolver for the registerPlayer field.
-func (r *mutationResolver) RegisterPlayer(ctx context.Context, input model.NewPlayer) (*model.Player, error) {
-	// Check if player already exists
-	player := model.Player{}
-	r.db.Where("name = ?", input.Name).First(&player)
-	if player.ID != "" {
-		return &player, nil
-	}
-
-	var id string
-	if input.ID != nil {
-		id = *input.ID
-	} else {
-		// TODO: Replace with mojang api call
-		mojangUUID, err := mojang.GetUUID(input.Name)
-		if err != nil {
-			return nil, errors.New("Could not get UUID from Mojang")
-		}
-		id = mojangUUID
-	}
-
-	player = model.Player{
-		ID:   id,
-		Name: input.Name,
-	}
-
-	result := r.db.Create(&player)
-	if result.Error != nil {
-		return nil, result.Error
-	}
-	return &player, nil
-}
-
-// LoginOrCreate is the resolver for the loginOrCreate field.
-func (r *mutationResolver) LoginOrCreate(ctx context.Context, playerName string) (*model.Player, error) {
-	// Check for existing playerName
-	player := model.Player{}
-	r.db.Where("name = ?", playerName).First(&player)
-	if r.db.Error != nil {
-		return nil, r.db.Error
-	}
-	if player.ID != "" {
-		return &player, nil
-	}
-
-	// Create new player
-	mojangUUID, err := mojang.GetUUID(playerName)
-	if err != nil {
-		return nil, err
-	}
-	player = model.Player{
-		ID:   mojangUUID,
-		Name: playerName,
-	}
-
-	r.db.Create(&player)
-	if r.db.Error != nil {
-		return nil, r.db.Error
-	}
-
-	return &player, nil
-}
 
 // Logs is the resolver for the logs field.
 func (r *playerResolver) Logs(ctx context.Context, obj *model.Player) ([]model.Log, error) {
