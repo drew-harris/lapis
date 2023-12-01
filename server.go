@@ -93,6 +93,20 @@ func main() {
 		})
 	})
 
+	app.Get("/hx/positions", func(c *fiber.Ctx) error {
+		positions := []model.Position{}
+
+		db.Order("saved_at desc").Preload("Player").Find(&positions)
+
+		if db.Error != nil {
+			return db.Error
+		}
+
+		return c.Render("positions", fiber.Map{
+			"positions": positions,
+		})
+	})
+
 	// Handle fiber with gql
 	app.Use("/query", func(c *fiber.Ctx) error {
 		test := adaptor.HTTPHandler(srv)

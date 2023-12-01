@@ -28,6 +28,22 @@
     </tr>
     {{end}}
   </table>
+
+  <h2>Lesson Progress</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Player Name</th>
+        <th>Unit</th>
+        <th>Objective ID</th>
+      </tr>
+    </thead>
+    <tbody hx-get="/hx/positions" hx-swap="innerHTML" hx-trigger="every 2s">
+      <tr>
+        <td style="border: none">Loading...</td>
+      </tr>
+    </tbody>
+  </table>
 </body>
 
 </html>
