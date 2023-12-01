@@ -53,6 +53,8 @@ func main() {
 		db.AutoMigrate(&model.Save{})
 		db.AutoMigrate(&model.Log{})
 		db.AutoMigrate(&model.CustomNode{})
+		db.AutoMigrate(&model.Position{})
+
 		return
 	}
 

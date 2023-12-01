@@ -92,6 +92,8 @@ models:
         resolver: true
       saves:
         resolver: true
+      positions:
+        resolver: true
   Log:
     fields:
       player:
@@ -99,6 +101,10 @@ models:
       attributes:
         resolver: true
   Save:
+    fields:
+      player:
+        resolver: true
+  Position:
     fields:
       player:
         resolver: true

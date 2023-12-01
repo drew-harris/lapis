@@ -8,6 +8,7 @@ type Player {
   logs: [Log!]!
   saves: [Save!]!
   createdAt: Time!
+  positions: [Position!]!
 }
 
 extend type Query {

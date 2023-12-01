@@ -1,0 +1,25 @@
+type Position {
+  player: Player!
+  playerId: String!
+  id: String!
+  objectiveID: String!
+  unit: String!
+  savedAt: Time!
+  additionalData: Map
+}
+
+extend type Query {
+  positions: [Position!]!
+  mostRecentPosition(code: String!): Position!
+}
+
+input InputPosition {
+  code: String!
+  objectiveID: String!
+  unit: String!
+  additionalData: Map
+}
+
+extend type Mutation {
+  saveNewPosition(input: InputPosition!): Position!
+}

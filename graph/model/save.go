@@ -11,7 +11,7 @@ type Save struct {
 	Name      string         `json:"name" gorm:"not null"`
 	Player    *Player        `json:"player" gorm:"not null"`
 	PlayerID  string         `json:"playerId" gorm:"not null"`
-	CreatedAt time.Time      `json:"createdAt" gorm:"not null"`
-	UpdatedAt time.Time      `json:"lastSavedAt" gorm:"not null"`
+	CreatedAt time.Time      `json:"createdAt" gorm:"not null;autoCreateTime"`
+	UpdatedAt time.Time      `json:"lastSavedAt" gorm:"not null;autoCreateTime"`
 	GraphData datatypes.JSON `json:"graphData"`
 }

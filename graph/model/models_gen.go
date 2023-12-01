@@ -8,6 +8,13 @@ import (
 	"strconv"
 )
 
+type InputPosition struct {
+	Code           string                 `json:"code"`
+	ObjectiveID    string                 `json:"objectiveID"`
+	Unit           string                 `json:"unit"`
+	AdditionalData map[string]interface{} `json:"additionalData,omitempty"`
+}
+
 type LimitFilter struct {
 	Limit *int `json:"limit,omitempty"`
 	Page  *int `json:"page,omitempty"`
