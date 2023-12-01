@@ -11,6 +11,7 @@ import (
 	"github.com/drew-harris/lapis/graph"
 	"github.com/drew-harris/lapis/graph/model"
 	"github.com/drew-harris/lapis/players"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/template/html/v2"
 
 	"github.com/gofiber/fiber/v2"
@@ -40,6 +41,7 @@ func main() {
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
+	app.Use(cors.New())
 
 	dsn := os.Getenv("DATABASE_URL")
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
