@@ -13,6 +13,7 @@ import (
 	"github.com/drew-harris/lapis/players"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/template/html/v2"
+	"github.com/posthog/posthog-go"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/adaptor"
@@ -60,7 +61,17 @@ func main() {
 		return
 	}
 
-	resolver := graph.NewResolver(db)
+	// Create Posthog client
+	posthogKey := os.Getenv("POSTHOG_KEY")
+	if posthogKey == "" {
+		_ = fmt.Errorf("failed to find posthog key")
+		panic(err)
+	}
+	posthog, _ := posthog.NewWithConfig(posthogKey, posthog.Config{
+		Endpoint: "https://app.posthog.com",
+	})
+
+	resolver := graph.NewResolver(db, posthog)
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &resolver}))
 
 	app.Get("/codes", func(c *fiber.Ctx) error {

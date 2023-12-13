@@ -10,11 +10,13 @@ import (
 	"fmt"
 	"slices"
 	"strings"
+	"time"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/drew-harris/lapis/graph/model"
 	"github.com/drew-harris/lapis/maps"
 	"github.com/google/uuid"
+	"github.com/posthog/posthog-go"
 	"gorm.io/datatypes"
 )
 
@@ -57,6 +59,7 @@ func (r *mutationResolver) Log(ctx context.Context, input model.LogInput) (*mode
 	if err != nil {
 		return nil, err
 	}
+
 	log := model.Log{
 		ID:         uuid.New().String(),
 		Message:    input.Message,
@@ -64,6 +67,23 @@ func (r *mutationResolver) Log(ctx context.Context, input model.LogInput) (*mode
 		Attributes: attributes,
 		Type:       input.Type,
 	}
+
+	properties := posthog.NewProperties()
+
+	if input.Attributes != nil {
+		for key, value := range input.Attributes {
+			properties.Set(key, value)
+		}
+	}
+
+	r.posthog.Enqueue(posthog.Capture{
+		DistinctId: log.PlayerID,
+		Event:      log.Type.String(),
+		Properties: properties,
+		Timestamp:  time.Now(),
+	})
+
+	fmt.Println("Logging event:", input.Type.String())
 
 	r.db.Create(&log)
 	if r.db.Error != nil {
