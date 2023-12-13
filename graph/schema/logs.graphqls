@@ -11,6 +11,8 @@ enum LogType {
     InventoryToChest
     UseFurnace
     PlaceSign
+    OpenContainer
+    CloseContainer
 }
 
 type Log {
