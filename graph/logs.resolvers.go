@@ -76,6 +76,8 @@ func (r *mutationResolver) Log(ctx context.Context, input model.LogInput) (*mode
 		}
 	}
 
+	properties.Set("message", input.Message)
+
 	r.posthog.Enqueue(posthog.Capture{
 		DistinctId: log.PlayerID,
 		Event:      log.Type.String(),
