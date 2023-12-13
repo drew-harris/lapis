@@ -5,7 +5,6 @@ enum LogType {
     MFPGraphReview
     RightClickCraftingTable
     CraftItem
-    CollectItem
     SelectRecipe
     UseJournal
     ChestToInventory
