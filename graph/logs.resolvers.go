@@ -45,7 +45,7 @@ func (r *logResolver) Attributes(ctx context.Context, obj *model.Log) (map[strin
 func (r *mutationResolver) Log(ctx context.Context, input model.LogInput) (*model.Log, error) {
 	// Check if playerid is valid
 	player := model.Player{}
-	r.db.Where("name = ?", input.PlayerName).First(&player)
+	r.db.Where("id = ?", input.PlayerName).First(&player)
 	if r.db.Error != nil {
 		fmt.Println(r.db.Error)
 		return nil, r.db.Error
