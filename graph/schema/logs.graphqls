@@ -14,6 +14,7 @@ enum LogType {
     PlaceSign
     OpenContainer
     CloseContainer
+    UseItem
 }
 
 type Log {
