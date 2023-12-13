@@ -3,13 +3,14 @@ enum LogType {
     CollectItems
     MFPFinishTask
     MFPGraphReview
-    RightClickCraftingTable
+    OpenCraftingTable
     CraftItem
     SelectRecipe
     UseJournal
     ChestToInventory
     InventoryToChest
-    UseFurnace
+    OpenFurnace
+    CloseFurnace
     PlaceSign
     OpenContainer
     CloseContainer
