@@ -2,3 +2,5 @@
 .graphqlrc.yml
 graph/generated.go
 ./graph/generated.go
+./lapis
+lapis
