@@ -2,18 +2,23 @@ package graph
 
 //go:generate go run github.com/99designs/gqlgen generate
 
-import "gorm.io/gorm"
+import (
+	"github.com/posthog/posthog-go"
+	"gorm.io/gorm"
+)
 
 // This file will not be regenerated automatically.
 //
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	db *gorm.DB
+	db      *gorm.DB
+	posthog posthog.Client
 }
 
-func NewResolver(db *gorm.DB) Resolver {
+func NewResolver(db *gorm.DB, posthog posthog.Client) Resolver {
 	return Resolver{
-		db: db,
+		db:      db,
+		posthog: posthog,
 	}
 }
