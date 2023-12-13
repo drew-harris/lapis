@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -67,11 +68,11 @@ func main() {
 		_ = fmt.Errorf("failed to find posthog key")
 		panic(err)
 	}
-	posthog, _ := posthog.NewWithConfig(posthogKey, posthog.Config{
+	pClient, _ := posthog.NewWithConfig(posthogKey, posthog.Config{
 		Endpoint: "https://app.posthog.com",
 	})
 
-	resolver := graph.NewResolver(db, posthog)
+	resolver := graph.NewResolver(db, pClient)
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &resolver}))
 
 	app.Get("/codes", func(c *fiber.Ctx) error {
@@ -98,6 +99,19 @@ func main() {
 		if err != nil {
 			return err
 		}
+
+		pClient.Enqueue(posthog.Alias{
+			DistinctId: player.ID,
+			Alias:      player.Name,
+			Timestamp:  time.Now(),
+		})
+
+		pClient.Enqueue(posthog.Identify{
+			DistinctId: player.ID,
+			Properties: posthog.NewProperties().Set("name", player.Name).Set("created", time.Now()),
+			Timestamp:  time.Now(),
+		})
+
 		return c.Render("result", fiber.Map{
 			"ID":   player.ID,
 			"Name": player.Name,
