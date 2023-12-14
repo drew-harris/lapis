@@ -1,49 +1,56 @@
 enum LogType {
-    PlaceBlock
-    CollectItems
-    MFPFinishTask
-    MFPGraphReview
-    OpenCraftingTable
-    CraftItem
-    SelectRecipe
-    UseJournal
-    ChestToInventory
-    InventoryToChest
-    OpenFurnace
-    CloseFurnace
-    PlaceSign
-    OpenContainer
-    CloseContainer
-    UseItem
+  PlaceBlock
+  CollectItems
+  OpenCraftingTable
+  CraftItem
+  SelectRecipe
+  UseJournal
+  ChestToInventory
+  InventoryToChest
+  OpenFurnace
+  CloseFurnace
+  PlaceSign
+  OpenContainer
+  CloseContainer
+  UseItem
+
+  MFPOpenGraph
+  MFPLessonBegin
+  MFPNextTask
+  MFPTaskComplete
+  MFPAssignmentSubmitted
+  MFPConnectNodes
+  MFPToggleInfoMode
+  MFPClearCanvas
 }
 
 type Log {
-    id: ID!
-    type: LogType!
-    message: String
-    player: Player!
-    playerId: String!
-    createdAt: Time!
-    attributes: Map
+  id: ID!
+  type: LogType!
+  message: String
+  player: Player!
+  playerId: String!
+  createdAt: Time!
+  attributes: Map
 }
 
 input LogQueryFilter {
-    playerId: String
-    type: [LogType!]
-    hasAttribute: String
+  playerId: String
+  type: [LogType!]
+  hasAttribute: String
 }
 
 extend type Query {
-    logs(filter: LogQueryFilter, limit: LimitFilter): [Log!]!
+  logs(filter: LogQueryFilter, limit: LimitFilter): [Log!]!
 }
 
 input LogInput {
-    message: String
-    type: LogType!
-    playerName: String!
-    attributes: Map
+  message: String
+  type: LogType!
+  playerName: String!
+  attributes: Map
 }
 
 extend type Mutation {
-    log(input: LogInput!): Log!
+  log(input: LogInput!): Log!
 }
