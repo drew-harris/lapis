@@ -60,6 +60,11 @@ func (r *mutationResolver) Log(ctx context.Context, input model.LogInput) (*mode
 		return nil, err
 	}
 
+	// Check if type is empty
+	if input.Type == "" {
+		return nil, errors.New("Type cannot be empty")
+	}
+
 	log := model.Log{
 		ID:         uuid.New().String(),
 		Message:    input.Message,
