@@ -54,22 +54,66 @@ type NewSave struct {
 type LogType string
 
 const (
-	LogTypePlaceBlock     LogType = "PlaceBlock"
-	LogTypeCollectItems   LogType = "CollectItems"
-	LogTypeMFPFinishTask  LogType = "MFPFinishTask"
-	LogTypeMFPGraphReview LogType = "MFPGraphReview"
+	LogTypePlaceBlock             LogType = "PlaceBlock"
+	LogTypeCollectItems           LogType = "CollectItems"
+	LogTypeOpenCraftingTable      LogType = "OpenCraftingTable"
+	LogTypeCraftItem              LogType = "CraftItem"
+	LogTypeSelectRecipe           LogType = "SelectRecipe"
+	LogTypeUseJournal             LogType = "UseJournal"
+	LogTypeChestToInventory       LogType = "ChestToInventory"
+	LogTypeInventoryToChest       LogType = "InventoryToChest"
+	LogTypeOpenFurnace            LogType = "OpenFurnace"
+	LogTypeCloseFurnace           LogType = "CloseFurnace"
+	LogTypePlaceSign              LogType = "PlaceSign"
+	LogTypeOpenContainer          LogType = "OpenContainer"
+	LogTypeCloseContainer         LogType = "CloseContainer"
+	LogTypeUseItem                LogType = "UseItem"
+	LogTypeAdventureStart         LogType = "AdventureStart"
+	LogTypeAdventureStop          LogType = "AdventureStop"
+	LogTypeEndLevel               LogType = "EndLevel"
+	LogTypeDialogueStart          LogType = "DialogueStart"
+	LogTypeMFPOpenGraph           LogType = "MFPOpenGraph"
+	LogTypeMFPLessonBegin         LogType = "MFPLessonBegin"
+	LogTypeMFPNextTask            LogType = "MFPNextTask"
+	LogTypeMFPTaskComplete        LogType = "MFPTaskComplete"
+	LogTypeMFPAssignmentSubmitted LogType = "MFPAssignmentSubmitted"
+	LogTypeMFPConnectNodes        LogType = "MFPConnectNodes"
+	LogTypeMFPToggleInfoMode      LogType = "MFPToggleInfoMode"
+	LogTypeMFPClearCanvas         LogType = "MFPClearCanvas"
 )
 
 var AllLogType = []LogType{
 	LogTypePlaceBlock,
 	LogTypeCollectItems,
-	LogTypeMFPFinishTask,
-	LogTypeMFPGraphReview,
+	LogTypeOpenCraftingTable,
+	LogTypeCraftItem,
+	LogTypeSelectRecipe,
+	LogTypeUseJournal,
+	LogTypeChestToInventory,
+	LogTypeInventoryToChest,
+	LogTypeOpenFurnace,
+	LogTypeCloseFurnace,
+	LogTypePlaceSign,
+	LogTypeOpenContainer,
+	LogTypeCloseContainer,
+	LogTypeUseItem,
+	LogTypeAdventureStart,
+	LogTypeAdventureStop,
+	LogTypeEndLevel,
+	LogTypeDialogueStart,
+	LogTypeMFPOpenGraph,
+	LogTypeMFPLessonBegin,
+	LogTypeMFPNextTask,
+	LogTypeMFPTaskComplete,
+	LogTypeMFPAssignmentSubmitted,
+	LogTypeMFPConnectNodes,
+	LogTypeMFPToggleInfoMode,
+	LogTypeMFPClearCanvas,
 }
 
 func (e LogType) IsValid() bool {
 	switch e {
-	case LogTypePlaceBlock, LogTypeCollectItems, LogTypeMFPFinishTask, LogTypeMFPGraphReview:
+	case LogTypePlaceBlock, LogTypeCollectItems, LogTypeOpenCraftingTable, LogTypeCraftItem, LogTypeSelectRecipe, LogTypeUseJournal, LogTypeChestToInventory, LogTypeInventoryToChest, LogTypeOpenFurnace, LogTypeCloseFurnace, LogTypePlaceSign, LogTypeOpenContainer, LogTypeCloseContainer, LogTypeUseItem, LogTypeAdventureStart, LogTypeAdventureStop, LogTypeEndLevel, LogTypeDialogueStart, LogTypeMFPOpenGraph, LogTypeMFPLessonBegin, LogTypeMFPNextTask, LogTypeMFPTaskComplete, LogTypeMFPAssignmentSubmitted, LogTypeMFPConnectNodes, LogTypeMFPToggleInfoMode, LogTypeMFPClearCanvas:
 		return true
 	}
 	return false

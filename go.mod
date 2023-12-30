@@ -8,6 +8,7 @@ require (
 	github.com/gofiber/template/html/v2 v2.0.5
 	github.com/google/uuid v1.4.0
 	github.com/joho/godotenv v1.5.1
+	github.com/posthog/posthog-go v0.0.0-20230801140217-d607812dee69
 	github.com/vektah/gqlparser/v2 v2.5.8
 	gorm.io/datatypes v1.2.0
 	gorm.io/driver/mysql v1.5.1
@@ -30,7 +31,6 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
-	github.com/posthog/posthog-go v0.0.0-20230801140217-d607812dee69 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/urfave/cli/v2 v2.25.5 // indirect

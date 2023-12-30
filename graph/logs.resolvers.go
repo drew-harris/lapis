@@ -16,7 +16,7 @@ import (
 	"github.com/drew-harris/lapis/graph/model"
 	"github.com/drew-harris/lapis/maps"
 	"github.com/google/uuid"
-	"github.com/posthog/posthog-go"
+	posthog "github.com/posthog/posthog-go"
 	"gorm.io/datatypes"
 )
 

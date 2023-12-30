@@ -77,7 +77,6 @@ func (r *positionResolver) AdditionalData(ctx context.Context, obj *model.Positi
 
 // Positions is the resolver for the positions field.
 func (r *queryResolver) Positions(ctx context.Context) ([]model.Position, error) {
-
 	db := r.db
 	fields := graphql.CollectAllFields(ctx)
 	if slices.Contains(fields, "player") {
@@ -107,6 +106,45 @@ func (r *queryResolver) MostRecentPosition(ctx context.Context, code string) (*m
 	}
 
 	return &position, nil
+}
+
+// GetPositionCacheForServer is the resolver for the getPositionCacheForServer field.
+func (r *queryResolver) GetPositionCacheForServer(ctx context.Context) ([]model.Position, error) {
+	// Fetch the most recent position for each playerid
+	db := r.db
+
+	positions := []model.Position{}
+	rows, err := db.Raw(`
+		WITH RankedData AS (
+    SELECT
+        *,
+        ROW_NUMBER() OVER (PARTITION BY player_id ORDER BY saved_at DESC) AS rnk
+    FROM
+        positions
+)
+SELECT
+    player_id, id, objective_id, unit, saved_at, additional_data
+FROM
+    RankedData
+WHERE
+    rnk = 1;
+		`).Rows()
+
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		position := model.Position{}
+		db.ScanRows(rows, &position)
+		positions = append(positions, position)
+	}
+
+	if r.db.Error != nil {
+		return nil, r.db.Error
+	}
+
+	return positions, nil
 }
 
 // Position returns PositionResolver implementation.

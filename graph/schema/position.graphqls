@@ -11,6 +11,8 @@ type Position {
 extend type Query {
   positions: [Position!]!
   mostRecentPosition(code: String!): Position!
+
+  getPositionCacheForServer: [Position!]!
 }
 
 input InputPosition {
