@@ -174,6 +174,17 @@ func (r *queryResolver) CustomNodes(ctx context.Context, playerID *string) ([]mo
 	return nodes, nil
 }
 
+// CustomNode is the resolver for the customNode field.
+// TODO: Add preloads
+func (r *queryResolver) CustomNode(ctx context.Context, id string) (*model.CustomNode, error) {
+	node := model.CustomNode{}
+	r.db.Where("id = ?", id).First(&node)
+	if r.db.Error != nil {
+		return nil, r.db.Error
+	}
+	return &node, nil
+}
+
 // Player is the resolver for the player field.
 func (r *saveResolver) Player(ctx context.Context, obj *model.Save) (*model.Player, error) {
 	if obj.Player != nil {
