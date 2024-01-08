@@ -17,6 +17,7 @@ enum LogType {
     AdventureStop
     EndLevel
     DialogueStart
+    LSComplete
 
     MFPOpenGraph
     MFPLessonBegin
