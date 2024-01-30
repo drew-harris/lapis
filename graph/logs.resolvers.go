@@ -71,6 +71,8 @@ func (r *mutationResolver) Log(ctx context.Context, input model.LogInput) (*mode
 		PlayerID:   player.ID,
 		Attributes: attributes,
 		Type:       input.Type,
+		Unit:       input.Unit,
+		Objective:  input.Objective,
 	}
 
 	properties := posthog.NewProperties()
@@ -93,6 +95,7 @@ func (r *mutationResolver) Log(ctx context.Context, input model.LogInput) (*mode
 	fmt.Println("Logging event:", input.Type.String())
 
 	r.db.Create(&log)
+
 	if r.db.Error != nil {
 		return nil, r.db.Error
 	}

@@ -23,6 +23,8 @@ type LimitFilter struct {
 type LogInput struct {
 	Message    *string                `json:"message,omitempty"`
 	Type       LogType                `json:"type"`
+	Unit       *string                `json:"unit,omitempty"`
+	Objective  *string                `json:"objective,omitempty"`
 	PlayerName string                 `json:"playerName"`
 	Attributes map[string]interface{} `json:"attributes,omitempty"`
 }
@@ -72,6 +74,7 @@ const (
 	LogTypeAdventureStop          LogType = "AdventureStop"
 	LogTypeEndLevel               LogType = "EndLevel"
 	LogTypeDialogueStart          LogType = "DialogueStart"
+	LogTypeLSComplete             LogType = "LSComplete"
 	LogTypeMFPOpenGraph           LogType = "MFPOpenGraph"
 	LogTypeMFPLessonBegin         LogType = "MFPLessonBegin"
 	LogTypeMFPNextTask            LogType = "MFPNextTask"
@@ -80,6 +83,7 @@ const (
 	LogTypeMFPConnectNodes        LogType = "MFPConnectNodes"
 	LogTypeMFPToggleInfoMode      LogType = "MFPToggleInfoMode"
 	LogTypeMFPClearCanvas         LogType = "MFPClearCanvas"
+	LogTypeMFPDropNode            LogType = "MFPDropNode"
 )
 
 var AllLogType = []LogType{
@@ -101,6 +105,7 @@ var AllLogType = []LogType{
 	LogTypeAdventureStop,
 	LogTypeEndLevel,
 	LogTypeDialogueStart,
+	LogTypeLSComplete,
 	LogTypeMFPOpenGraph,
 	LogTypeMFPLessonBegin,
 	LogTypeMFPNextTask,
@@ -109,11 +114,12 @@ var AllLogType = []LogType{
 	LogTypeMFPConnectNodes,
 	LogTypeMFPToggleInfoMode,
 	LogTypeMFPClearCanvas,
+	LogTypeMFPDropNode,
 }
 
 func (e LogType) IsValid() bool {
 	switch e {
-	case LogTypePlaceBlock, LogTypeCollectItems, LogTypeOpenCraftingTable, LogTypeCraftItem, LogTypeSelectRecipe, LogTypeUseJournal, LogTypeChestToInventory, LogTypeInventoryToChest, LogTypeOpenFurnace, LogTypeCloseFurnace, LogTypePlaceSign, LogTypeOpenContainer, LogTypeCloseContainer, LogTypeUseItem, LogTypeAdventureStart, LogTypeAdventureStop, LogTypeEndLevel, LogTypeDialogueStart, LogTypeMFPOpenGraph, LogTypeMFPLessonBegin, LogTypeMFPNextTask, LogTypeMFPTaskComplete, LogTypeMFPAssignmentSubmitted, LogTypeMFPConnectNodes, LogTypeMFPToggleInfoMode, LogTypeMFPClearCanvas:
+	case LogTypePlaceBlock, LogTypeCollectItems, LogTypeOpenCraftingTable, LogTypeCraftItem, LogTypeSelectRecipe, LogTypeUseJournal, LogTypeChestToInventory, LogTypeInventoryToChest, LogTypeOpenFurnace, LogTypeCloseFurnace, LogTypePlaceSign, LogTypeOpenContainer, LogTypeCloseContainer, LogTypeUseItem, LogTypeAdventureStart, LogTypeAdventureStop, LogTypeEndLevel, LogTypeDialogueStart, LogTypeLSComplete, LogTypeMFPOpenGraph, LogTypeMFPLessonBegin, LogTypeMFPNextTask, LogTypeMFPTaskComplete, LogTypeMFPAssignmentSubmitted, LogTypeMFPConnectNodes, LogTypeMFPToggleInfoMode, LogTypeMFPClearCanvas, LogTypeMFPDropNode:
 		return true
 	}
 	return false

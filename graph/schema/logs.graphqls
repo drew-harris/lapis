@@ -38,6 +38,8 @@ type Log {
   playerId: String!
   createdAt: Time!
   attributes: Map
+  unit: String
+  objective: String
 }
 
 input LogQueryFilter {
@@ -53,6 +55,8 @@ extend type Query {
 input LogInput {
   message: String
   type: LogType!
+  unit: String
+  objective: String
   playerName: String!
   attributes: Map
 }
