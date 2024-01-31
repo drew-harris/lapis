@@ -70,7 +70,7 @@ func (s *StandardsController) AddLog(log *model.Log) error {
 			return err
 		}
 
-		err = views.TestLog(*log).Render(context.Background(), writer)
+		err = views.LogRow(*log).Render(context.Background(), writer)
 		if err != nil {
 			return err
 		}

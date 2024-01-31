@@ -38,7 +38,7 @@ func (h *CodeHandler) SetupPlayer(c *fiber.Ctx) error {
 		return err
 	}
 
-	player, err := RegisterPlayerWithNewCode(playerInput.Name, h.db)
+	player, err := RegisterPlayerWithNewCode(playerInput, h.db)
 	if err != nil {
 		return err
 	}
