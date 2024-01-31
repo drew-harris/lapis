@@ -7,7 +7,6 @@ require (
 	github.com/a-h/templ v0.2.543
 	github.com/gofiber/contrib/websocket v1.3.0
 	github.com/gofiber/fiber/v2 v2.52.0
-	github.com/gofiber/template/html/v2 v2.0.5
 	github.com/google/uuid v1.6.0
 	github.com/joho/godotenv v1.5.1
 	github.com/posthog/posthog-go v0.0.0-20230801140217-d607812dee69
@@ -23,8 +22,6 @@ require (
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/fasthttp/websocket v1.5.7 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
-	github.com/gofiber/template v1.8.2 // indirect
-	github.com/gofiber/utils v1.1.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.3 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
