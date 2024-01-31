@@ -2,15 +2,19 @@ package views
 
 import "github.com/drew-harris/lapis/graph/model"
 
-templ StandardsPage() {
+templ StandardsPage(logs []model.Log) {
 	@MainLayout() {
 		<div hx-ext="ws" ws-connect="/ws/logs">
-			<div class="bg-blue-200 flex px-8 flex-row justify-between border shadow-sm border-blue-800 text-xl p-2 items-center">
+			<div class="flex flex-row justify-between text-xl p-2 items-center">
 				Standards Page!!!
 				<button hx-post="/standards/test" class="border text-[14px] border-blue-800 p-2 font-bold" hx-disabled-elt="this" hx-swap="none">Send Test Log</button>
 			</div>
-			<div class="my-4 text-xl font-bold">Events Stream</div>
-			<div id="loglist"></div>
+			<div class="my-4 text-xl font-bold">Events Stream (live)</div>
+			<div id="loglist" class="flex flex-col gap-2">
+				for _, log := range(logs) {
+					@LogRow(log)
+				}
+			</div>
 		</div>
 	}
 }
@@ -23,11 +27,17 @@ func stringOrEmpty(s *string) string {
 }
 
 templ LogRow(log model.Log) {
-	<div hx-swap-oob="afterbegin" id="loglist">
-		<div class="bg-blue-100 flex border-blue-400 border gap-4 p-2">
-			<div>{ log.PlayerID }</div>
-			<div>{ log.Type.String() }</div>
-			<div>{ stringOrEmpty(log.Objective) }</div>
+	<div class="bg-blue-50 flex justify-between border-blue-400 border gap-4 p-2">
+		<div>
+			<div>Type: { log.Type.String() }</div>
+			<div>Code: { log.PlayerID }</div>
 		</div>
+		<div>{ log.Attributes.String() }</div>
+	</div>
+}
+
+templ LiveLogSend(log model.Log) {
+	<div hx-swap-oob="afterbegin" id="loglist">
+		@LogRow(log)
 	</div>
 }

@@ -19,7 +19,13 @@ type StandardsController struct {
 }
 
 func (s *StandardsController) ShowStandardsPage(c *fiber.Ctx) error {
-	return views.SendView(c, views.StandardsPage())
+	// Get the last 5 logs
+	logs, err := s.Logging.GetLastLogs(30)
+	if err != nil {
+		return err
+	}
+
+	return views.SendView(c, views.StandardsPage(*logs))
 }
 
 func (s *StandardsController) SendTestLog(c *fiber.Ctx) error {
@@ -40,7 +46,7 @@ func (s *StandardsController) SendTestLog(c *fiber.Ctx) error {
 
 	fmt.Println("Sending log through realtime")
 
-	err = s.Realtime.SendHtml(views.LogRow(*log))
+	err = s.Realtime.SendHtml(views.LiveLogSend(*log))
 	if err != nil {
 		fmt.Println("realtime error")
 		return nil

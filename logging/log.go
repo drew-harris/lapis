@@ -86,3 +86,12 @@ func (l *LoggingService) Log(input model.LogInput) (*model.Log, error) {
 
 	return &log, nil
 }
+
+func (l *LoggingService) GetLastLogs(limit int) (*[]model.Log, error) {
+	logs := []model.Log{}
+	err := l.db.Order("created_at desc").Limit(limit).Find(&logs).Error
+	if err != nil {
+		return nil, err
+	}
+	return &logs, nil
+}
