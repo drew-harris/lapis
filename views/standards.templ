@@ -14,7 +14,7 @@ templ StandardsPage() {
 }
 
 templ TestLog(log model.Log) {
-	<div id="loglist" class="bg-blue-200 text-xl p-8">
+	<div hx-swap-oob="beforeend" id="loglist" class="bg-blue-200 text-xl p-8">
 		<div>Got it</div>
 	</div>
 }

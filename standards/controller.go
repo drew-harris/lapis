@@ -1,8 +1,8 @@
 package standards
 
 import (
+	"context"
 	"fmt"
-	"log"
 
 	"github.com/drew-harris/lapis/graph/model"
 	"github.com/drew-harris/lapis/views"
@@ -36,13 +36,18 @@ func (s *StandardsController) AddWebSocketConnection(c *websocket.Conn) error {
 	)
 	for {
 		if mt, msg, err = c.ReadMessage(); err != nil {
-			log.Println("read:", err)
 			break
 		}
-		log.Printf("recv: %s", msg)
 
 		if err = c.WriteMessage(mt, msg); err != nil {
-			log.Println("write:", err)
+			break
+		}
+	}
+
+	// Remove connection
+	for i, c2 := range s.wsConns {
+		if c2 == c {
+			s.wsConns = append(s.wsConns[:i], s.wsConns[i+1:]...)
 			break
 		}
 	}
@@ -60,15 +65,15 @@ func (s *StandardsController) AddLog(log *model.Log) error {
 			continue
 		}
 
-		var msg string = "<div id=\"loglist\">test</div>"
-
-		err := c2.WriteMessage(websocket.TextMessage, []byte(msg))
+		writer, err := c2.NextWriter(websocket.TextMessage)
 		if err != nil {
-			fmt.Println("got conn error")
-			fmt.Println(err)
 			return err
 		}
 
+		err = views.TestLog(*log).Render(context.Background(), writer)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
