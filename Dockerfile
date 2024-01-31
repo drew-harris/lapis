@@ -16,11 +16,12 @@ RUN go mod download
 
 COPY . .
 
+RUN go install github.com/a-h/templ/cmd/templ@latest
+RUN templ generate
+
 RUN go run github.com/99designs/gqlgen generate
 
-RUN go install github.com/a-h/templ/cmd/templ@latest
 RUN go mod tidy
-RUN templ generate
 
 COPY --from=tailwind app/dist/out.css ./dist/out.css
 
