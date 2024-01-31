@@ -8,7 +8,7 @@ import (
 )
 
 // Function to get six random letters
-func getRandomLetters() string {
+func GetRandomLetters() string {
 	var letters = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 	b := make([]rune, 6)
 	for i := range b {
@@ -21,7 +21,7 @@ func RegisterPlayerWithNewCode(input CreatePlayerInput, db *gorm.DB) (*model.Pla
 	player := model.Player{}
 
 	if input.Code == "" {
-		input.Code = getRandomLetters()
+		input.Code = GetRandomLetters()
 	}
 
 	// Make sure code is unique
@@ -31,7 +31,7 @@ func RegisterPlayerWithNewCode(input CreatePlayerInput, db *gorm.DB) (*model.Pla
 		if count == 0 {
 			break
 		}
-		input.Code = getRandomLetters()
+		input.Code = GetRandomLetters()
 	}
 
 	player = model.Player{

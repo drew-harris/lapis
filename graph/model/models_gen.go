@@ -84,6 +84,7 @@ const (
 	LogTypeMFPToggleInfoMode      LogType = "MFPToggleInfoMode"
 	LogTypeMFPClearCanvas         LogType = "MFPClearCanvas"
 	LogTypeMFPDropNode            LogType = "MFPDropNode"
+	LogTypeTestLog                LogType = "TestLog"
 )
 
 var AllLogType = []LogType{
@@ -115,11 +116,12 @@ var AllLogType = []LogType{
 	LogTypeMFPToggleInfoMode,
 	LogTypeMFPClearCanvas,
 	LogTypeMFPDropNode,
+	LogTypeTestLog,
 }
 
 func (e LogType) IsValid() bool {
 	switch e {
-	case LogTypePlaceBlock, LogTypeCollectItems, LogTypeOpenCraftingTable, LogTypeCraftItem, LogTypeSelectRecipe, LogTypeUseJournal, LogTypeChestToInventory, LogTypeInventoryToChest, LogTypeOpenFurnace, LogTypeCloseFurnace, LogTypePlaceSign, LogTypeOpenContainer, LogTypeCloseContainer, LogTypeUseItem, LogTypeAdventureStart, LogTypeAdventureStop, LogTypeEndLevel, LogTypeDialogueStart, LogTypeLSComplete, LogTypeMFPOpenGraph, LogTypeMFPLessonBegin, LogTypeMFPNextTask, LogTypeMFPTaskComplete, LogTypeMFPAssignmentSubmitted, LogTypeMFPConnectNodes, LogTypeMFPToggleInfoMode, LogTypeMFPClearCanvas, LogTypeMFPDropNode:
+	case LogTypePlaceBlock, LogTypeCollectItems, LogTypeOpenCraftingTable, LogTypeCraftItem, LogTypeSelectRecipe, LogTypeUseJournal, LogTypeChestToInventory, LogTypeInventoryToChest, LogTypeOpenFurnace, LogTypeCloseFurnace, LogTypePlaceSign, LogTypeOpenContainer, LogTypeCloseContainer, LogTypeUseItem, LogTypeAdventureStart, LogTypeAdventureStop, LogTypeEndLevel, LogTypeDialogueStart, LogTypeLSComplete, LogTypeMFPOpenGraph, LogTypeMFPLessonBegin, LogTypeMFPNextTask, LogTypeMFPTaskComplete, LogTypeMFPAssignmentSubmitted, LogTypeMFPConnectNodes, LogTypeMFPToggleInfoMode, LogTypeMFPClearCanvas, LogTypeMFPDropNode, LogTypeTestLog:
 		return true
 	}
 	return false

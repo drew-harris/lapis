@@ -5,9 +5,11 @@ import "github.com/drew-harris/lapis/graph/model"
 templ StandardsPage() {
 	@MainLayout() {
 		<div hx-ext="ws" ws-connect="/ws/logs">
-			<div class="bg-blue-200 border shadow-sm border-blue-800 text-xl p-8">
+			<div class="bg-blue-200 flex px-8 flex-row justify-between border shadow-sm border-blue-800 text-xl p-2 items-center">
 				Standards Page!!!
+				<button hx-post="/standards/test" class="border text-[14px] border-blue-800 p-2 font-bold" hx-disabled-elt="this" hx-swap="none">Send Test Log</button>
 			</div>
+			<div class="my-4 text-xl font-bold">Events Stream</div>
 			<div id="loglist"></div>
 		</div>
 	}
@@ -21,9 +23,11 @@ func stringOrEmpty(s *string) string {
 }
 
 templ LogRow(log model.Log) {
-	<tr hx-swap-oob="beforeend" id="loglist" class="bg-blue-200 text-xl p-8">
-		<td>{ log.PlayerID }</td>
-		<td>{ log.Type.String() }</td>
-		<td>{ stringOrEmpty(log.Objective) }</td>
-	</tr>
+	<div hx-swap-oob="afterbegin" id="loglist">
+		<div class="bg-blue-100 flex border-blue-400 border gap-4 p-2">
+			<div>{ log.PlayerID }</div>
+			<div>{ log.Type.String() }</div>
+			<div>{ stringOrEmpty(log.Objective) }</div>
+		</div>
+	</div>
 }

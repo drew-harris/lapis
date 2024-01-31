@@ -28,6 +28,8 @@ enum LogType {
   MFPToggleInfoMode
   MFPClearCanvas
   MFPDropNode
+
+  TestLog
 }
 
 type Log {

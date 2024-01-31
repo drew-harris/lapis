@@ -6,17 +6,14 @@ package graph
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"slices"
 	"strings"
-	"time"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/drew-harris/lapis/graph/model"
 	"github.com/drew-harris/lapis/maps"
-	"github.com/google/uuid"
-	posthog "github.com/posthog/posthog-go"
+	"github.com/drew-harris/lapis/views"
 	"gorm.io/datatypes"
 )
 
@@ -45,67 +42,15 @@ func (r *logResolver) Attributes(ctx context.Context, obj *model.Log) (map[strin
 
 // Log is the resolver for the log field.
 func (r *mutationResolver) Log(ctx context.Context, input model.LogInput) (*model.Log, error) {
-	// Check if playerid is valid
-	player := model.Player{}
-	r.db.Where("id = ?", input.PlayerName).First(&player)
-	if r.db.Error != nil {
-		fmt.Println(r.db.Error)
-		return nil, r.db.Error
-	}
-	if player.ID == "" {
-		return nil, errors.New("Player id is not valid")
-	}
-	attributes, err := maps.FromMap(input.Attributes)
+	log, err := r.logging.Log(input)
 	if err != nil {
 		return nil, err
 	}
-
-	// Check if type is empty
-	if input.Type == "" {
-		return nil, errors.New("Type cannot be empty")
-	}
-
-	log := model.Log{
-		ID:         uuid.New().String(),
-		Message:    input.Message,
-		PlayerID:   player.ID,
-		Attributes: attributes,
-		Type:       input.Type,
-		Unit:       input.Unit,
-		Objective:  input.Objective,
-	}
-
-	properties := posthog.NewProperties()
-
-	if input.Attributes != nil {
-		for key, value := range input.Attributes {
-			properties.Set(key, value)
-		}
-	}
-
-	properties.Set("message", input.Message)
-
-	r.posthog.Enqueue(posthog.Capture{
-		DistinctId: log.PlayerID,
-		Event:      log.Type.String(),
-		Properties: properties,
-		Timestamp:  time.Now(),
-	})
-
-	fmt.Println("Logging event:", input.Type.String())
-
-	r.db.Create(&log)
-
-	if r.db.Error != nil {
-		return nil, r.db.Error
-	}
-
-	err = r.standards.AddLog(&log)
+	err = r.realtime.SendHtml(views.LogRow(*log))
 	if err != nil {
 		return nil, err
 	}
-
-	return &log, nil
+	return log, err
 }
 
 // Logs is the resolver for the logs field.

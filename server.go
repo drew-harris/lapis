@@ -10,6 +10,8 @@ import (
 	"github.com/drew-harris/lapis/code"
 	"github.com/drew-harris/lapis/graph"
 	"github.com/drew-harris/lapis/graph/model"
+	"github.com/drew-harris/lapis/logging"
+	"github.com/drew-harris/lapis/realtime"
 	"github.com/drew-harris/lapis/standards"
 	"github.com/gofiber/contrib/websocket"
 
@@ -74,9 +76,17 @@ func main() {
 		Endpoint: "https://app.posthog.com",
 	})
 
-	standardsController := standards.New(db)
+	realtimeService := realtime.New()
 
-	resolver := graph.NewResolver(db, pClient, standardsController)
+	logging := logging.New(db, pClient)
+
+	standardsController := &standards.StandardsController{
+		Db:       db,
+		Realtime: realtimeService,
+		Logging:  logging,
+	}
+
+	resolver := graph.NewResolver(db, pClient, standardsController, realtimeService, logging)
 
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &resolver}))
 
@@ -95,10 +105,12 @@ func main() {
 	app.Post("/hx/setup", codeHandler.SetupPlayer)
 
 	app.Get("/standards", standardsController.ShowStandardsPage)
+	app.Post("/standards/test", standardsController.SendTestLog)
 
 	// Live log view
 	app.Get("/ws/logs", websocket.New(func(c *websocket.Conn) {
-		standardsController.AddWebSocketConnection(c)
+		fmt.Println("Adding webscoket connection")
+		realtimeService.AddWebSocketConnection(c)
 	}, websocket.Config{}))
 
 	// Handle fiber with gql
