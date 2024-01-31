@@ -4,16 +4,16 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/drew-harris/lapis/code"
 	"github.com/drew-harris/lapis/graph"
 	"github.com/drew-harris/lapis/graph/model"
-	"github.com/drew-harris/lapis/players"
+	"github.com/drew-harris/lapis/standards"
+	"github.com/gofiber/contrib/websocket"
+
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/template/html/v2"
 	"github.com/posthog/posthog-go"
 
 	"github.com/gofiber/fiber/v2"
@@ -26,10 +26,6 @@ import (
 
 const defaultPort = "8080"
 
-type CreatePlayerInput struct {
-	Name string `json:"name"`
-}
-
 func main() {
 	//Load env safely
 	err := godotenv.Load()
@@ -39,11 +35,17 @@ func main() {
 		port = defaultPort
 	}
 
-	engine := html.New("./views/", ".html")
-	app := fiber.New(fiber.Config{
-		Views: engine,
-	})
+	app := fiber.New(fiber.Config{})
 	app.Use(cors.New())
+	app.Use("/ws", func(c *fiber.Ctx) error {
+		// IsWebSocketUpgrade returns true if the client
+		// requested upgrade to the WebSocket protocol.
+		if websocket.IsWebSocketUpgrade(c) {
+			c.Locals("allowed", true)
+			return c.Next()
+		}
+		return fiber.ErrUpgradeRequired
+	})
 
 	dsn := os.Getenv("DATABASE_URL")
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -72,50 +74,14 @@ func main() {
 		Endpoint: "https://app.posthog.com",
 	})
 
-	resolver := graph.NewResolver(db, pClient)
+	standardsController := standards.New(db)
+
+	resolver := graph.NewResolver(db, pClient, standardsController)
+
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &resolver}))
 
-	app.Get("/codes", func(c *fiber.Ctx) error {
-		players, err := players.GetAllPlayers(db)
-		if err != nil {
-			return err
-		}
-		return c.Render("code", fiber.Map{
-			"players": players,
-		})
-	})
-
 	app.Get("/styles.css", func(c *fiber.Ctx) error {
-		return c.SendFile("./views/styles.css")
-	})
-
-	app.Post("/hx/setup", func(c *fiber.Ctx) error {
-		playerInput := CreatePlayerInput{}
-		if err := c.BodyParser(&playerInput); err != nil {
-			return err
-		}
-
-		player, err := code.RegisterPlayerWithNewCode(playerInput.Name, db)
-		if err != nil {
-			return err
-		}
-
-		pClient.Enqueue(posthog.Alias{
-			DistinctId: player.ID,
-			Alias:      player.Name,
-			Timestamp:  time.Now(),
-		})
-
-		pClient.Enqueue(posthog.Identify{
-			DistinctId: player.ID,
-			Properties: posthog.NewProperties().Set("name", player.Name).Set("created", time.Now()),
-			Timestamp:  time.Now(),
-		})
-
-		return c.Render("result", fiber.Map{
-			"ID":   player.ID,
-			"Name": player.Name,
-		})
+		return c.SendFile("./dist/out.css")
 	})
 
 	// Handle fiber with gql
@@ -123,6 +89,17 @@ func main() {
 		test := adaptor.HTTPHandler(srv)
 		return test(c)
 	})
+
+	codeHandler := code.CreateCodeHandler(db, pClient)
+	app.Get("/codes", codeHandler.GetCodes)
+	app.Post("/hx/setup", codeHandler.SetupPlayer)
+
+	app.Get("/standards", standardsController.ShowStandardsPage)
+
+	// Live log view
+	app.Get("/ws/logs", websocket.New(func(c *websocket.Conn) {
+		standardsController.AddWebSocketConnection(c)
+	}, websocket.Config{}))
 
 	// Handle fiber with gql
 	app.Use("/", func(c *fiber.Ctx) error {

@@ -1,0 +1,23 @@
+{
+  "name": "lapis",
+  "version": "1.0.0",
+  "description": "High level Step individual ksa",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "twgen": "npx tailwindcss -i views/styles.css -o ./dist/out.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/drew-harris/lapis.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/drew-harris/lapis/issues"
+  },
+  "homepage": "https://github.com/drew-harris/lapis#readme",
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}

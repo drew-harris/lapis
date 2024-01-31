@@ -1,0 +1,10 @@
+package views
+
+import "github.com/drew-harris/lapis/graph/model"
+
+templ PlayerRow(player model.Player) {
+	<tr class="border-black border">
+		<td>{ player.ID }</td>
+		<td>{ player.Name }</td>
+	</tr>
+}

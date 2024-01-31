@@ -45,3 +45,7 @@ func RegisterPlayerWithNewCode(name string, db *gorm.DB) (*model.Player, error) 
 	}
 	return &player, nil
 }
+
+type CreatePlayerInput struct {
+	Name string `json:"name"`
+}

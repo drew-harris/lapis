@@ -1,0 +1,22 @@
+package views
+
+import (
+	"github.com/drew-harris/lapis/graph/model"
+)
+
+templ CodePage(players []model.Player) {
+	@MainLayout() {
+		<h1 class="text-xl">Setup players</h1>
+		<form hx-post="/hx/setup" hx-on::after-request="this.reset()" hx-swap="afterbegin" hx-target="#players">
+			<label for="name">Name</label>
+			<input class="border border-black" type="text" name="name"/>
+			<button type="submit">Submit</button>
+		</form>
+		<h2>Players</h2>
+		<table class="border border-black" id="players">
+			for _, player := range(players) {
+				@PlayerRow(player)
+			}
+		</table>
+	}
+}
