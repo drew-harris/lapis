@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 td {
   padding: 4px;
   border: 1px solid black;

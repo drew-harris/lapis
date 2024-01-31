@@ -17,26 +17,26 @@ func getRandomLetters() string {
 	return string(b)
 }
 
-func RegisterPlayerWithNewCode(name string, db *gorm.DB) (*model.Player, error) {
+func RegisterPlayerWithNewCode(input CreatePlayerInput, db *gorm.DB) (*model.Player, error) {
 	player := model.Player{}
 
-	var id string
-	// TODO: Replace with mojang api call
-	id = getRandomLetters()
+	if input.Code == "" {
+		input.Code = getRandomLetters()
+	}
 
 	// Make sure code is unique
 	for {
 		var count int64
-		db.Model(&model.Player{}).Where("id = ?", id).Count(&count)
+		db.Model(&model.Player{}).Where("id = ?", input.Code).Count(&count)
 		if count == 0 {
 			break
 		}
-		id = getRandomLetters()
+		input.Code = getRandomLetters()
 	}
 
 	player = model.Player{
-		ID:   id,
-		Name: name,
+		ID:   input.Code,
+		Name: input.Name,
 	}
 
 	result := db.Create(&player)
@@ -44,4 +44,9 @@ func RegisterPlayerWithNewCode(name string, db *gorm.DB) (*model.Player, error) 
 		return nil, result.Error
 	}
 	return &player, nil
+}
+
+type CreatePlayerInput struct {
+	Name string `json:"name"`
+	Code string `json:"code"`
 }

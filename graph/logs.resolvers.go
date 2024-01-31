@@ -99,6 +99,12 @@ func (r *mutationResolver) Log(ctx context.Context, input model.LogInput) (*mode
 	if r.db.Error != nil {
 		return nil, r.db.Error
 	}
+
+	err = r.standards.AddLog(&log)
+	if err != nil {
+		return nil, err
+	}
+
 	return &log, nil
 }
 

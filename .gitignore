@@ -4,3 +4,8 @@ graph/generated.go
 ./graph/generated.go
 ./lapis
 lapis
+node_modules
+tmp/
+dist/out.css
+
+**_templ.go
