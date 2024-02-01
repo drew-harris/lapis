@@ -46,7 +46,7 @@ func (r *mutationResolver) Log(ctx context.Context, input model.LogInput) (*mode
 	if err != nil {
 		return nil, err
 	}
-	err = r.realtime.SendHtml(views.LogRow(*log))
+	err = r.realtime.SendHtml(views.LiveLogSend(*log))
 	if err != nil {
 		return nil, err
 	}
