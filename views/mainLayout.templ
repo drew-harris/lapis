@@ -1,5 +1,23 @@
 package views
 
+import (
+	"os"
+)
+
+func getScripts() string {
+	devMode := os.Getenv("DEV_MODE")
+	if devMode == "true" {
+		return `
+			<script type="module" src="http://localhost:5173/@vite/client"></script>
+			<script type="module" src="http://localhost:5173/standards/client/index.tsx"></script>
+		`
+	} else {
+		return `
+			<script type="module" src="/index.js"></script>
+		`
+	}
+}
+
 templ MainLayout() {
 	<html>
 		<head>
@@ -10,8 +28,9 @@ templ MainLayout() {
 			<script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
 			<script src="https://unpkg.com/htmx.org/dist/ext/preload.js"></script>
 			<link href="/styles.css" rel="stylesheet"/>
+			@templ.Raw(getScripts())
 		</head>
-		<body hx-ext="preload" hx-boost="true" class="p-8">
+		<body hx-ext="preload" class="p-8">
 			<nav class="mb-8 flex gap-8 border-b-gray-500 border-b">
 				<a preload href="/codes">Codes</a>
 				<a preload href="/standards">Standards</a>

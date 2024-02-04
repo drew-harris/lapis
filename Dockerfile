@@ -1,9 +1,11 @@
-FROM node:18 as tailwind
+FROM node:18 as javascript
 
 WORKDIR /app
 COPY . .
-RUN npm install
-RUN npm run twgen
+RUN npm install -g pnpm
+RUN pnpm i
+RUN pnpm run tw:gen
+RUN pnpm run build
 
 FROM golang:1.21
 
@@ -23,7 +25,8 @@ RUN go run github.com/99designs/gqlgen generate
 
 RUN go mod tidy
 
-COPY --from=tailwind app/dist/out.css ./dist/out.css
+COPY --from=javascript app/dist/out.css ./dist/out.css
+COPY --from=javascript app/dist/client/index.js ./dist/client/index.js
 
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o ./lapis

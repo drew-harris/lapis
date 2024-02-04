@@ -6,6 +6,7 @@ graph/generated.go
 lapis
 node_modules
 tmp/
+dist/client/**
 dist/out.css
 
 **_templ.go
