@@ -1,13 +1,13 @@
 import { createSignal } from "solid-js";
 
 export function StandardsForm() {
-  const [name, setName] = createSignal("james");
+  const [name, setName] = createSignal("drew was here");
   return (
     <>
       <div>{name() + ""}</div>
       <div>{name() + ""}</div>
       <input
-        class="bg-green-100"
+        class="bg-purple-200"
         type="text"
         value={name()}
         onInput={(e) => setName((e.target as HTMLInputElement).value)}

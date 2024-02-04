@@ -4,7 +4,7 @@ import "github.com/drew-harris/lapis/graph/model"
 
 templ StandardsPage(logs []model.Log) {
 	@MainLayout() {
-		<vite-land src="standards"/>
+		<div id="standards-form"/>
 		<div hx-ext="ws" ws-connect="/ws/logs">
 			<div class="flex flex-row justify-between text-xl p-2 items-center">
 				Standards Page!!!

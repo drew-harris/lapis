@@ -2,3 +2,13 @@
 .graphqlrc.yml
 ./graph/generated.go
 .git
+node_modules
+./graph/generated.go
+./lapis
+lapis
+node_modules
+tmp/
+dist/client/**
+dist/out.css
+
+**_templ.go
