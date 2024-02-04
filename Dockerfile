@@ -2,8 +2,8 @@ FROM node:18 as tailwind
 
 WORKDIR /app
 COPY . .
-RUN npm install
-RUN npm run twgen
+RUN pnpm i
+RUN npm run tw:gen
 
 FROM golang:1.21
 

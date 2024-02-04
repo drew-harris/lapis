@@ -94,6 +94,12 @@ func main() {
 		return c.SendFile("./dist/out.css")
 	})
 
+	app.Get("/index.js", func(c *fiber.Ctx) error {
+		// Dont cache
+		c.Set("Cache-Control", "no-store, no-cache, must-revalidate, post-check=0, pre-check=0")
+		return c.SendFile("./dist/client/index.js")
+	})
+
 	// Handle fiber with gql
 	app.Use("/query", func(c *fiber.Ctx) error {
 		test := adaptor.HTTPHandler(srv)
